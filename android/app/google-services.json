@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "138662904091",
+    "firebase_url": "https://positivity-bc10b.firebaseio.com",
+    "project_id": "positivity-bc10b",
+    "storage_bucket": "positivity-bc10b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:138662904091:android:367b5e15d02848bb",
+        "android_client_info": {
+          "package_name": "com.bigset.positivity"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "138662904091-87bhb4toh3ogd7fta4mip56lbco7399u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBH3Jj2kCBfhsrmW2ifKDVoYa0mqeoKapM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "138662904091-87bhb4toh3ogd7fta4mip56lbco7399u.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "138662904091-abjnj0g3vck5r9h61iiedjl9nuh2eejq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.bigset.positivity"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
