@@ -24,7 +24,6 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
-		27760E91229B6FDF00F5F127 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 27760E6A229B6FDF00F5F127 /* GoogleService-Info.plist */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -41,7 +40,7 @@
 		66F583A38C047519D1E18159 /* libPods-PositivityTrainer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 599A1087F9C545123EFD61BE /* libPods-PositivityTrainer.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		8AEB10120B9847F8905B7DA1 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C97DD56AE46E45398AF70E2E /* libRNFirebase.a */; };
-		9133CB0122A057D100845210 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9133CB0022A057D100845210 /* GoogleService-Info.plist */; };
+		91D1905622A1A6EC000204FF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 91D1905522A1A6EC000204FF /* GoogleService-Info.plist */; };
 		91FADA4A22A064B80045C6A0 /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 91FADA4722A064AA0045C6A0 /* libRNGestureHandler.a */; };
 		91FADBB622A0836E0045C6A0 /* libFBSDKCoreKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 91FADBB522A0836E0045C6A0 /* libFBSDKCoreKit.a */; };
 		91FADBB822A0836E0045C6A0 /* libFBSDKLoginKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 91FADBB722A0836E0045C6A0 /* libFBSDKLoginKit.a */; };
@@ -377,7 +376,6 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = PositivityTrainer/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = PositivityTrainer/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
-		27760E6A229B6FDF00F5F127 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* PositivityTrainer-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "PositivityTrainer-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* PositivityTrainer-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "PositivityTrainer-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -389,7 +387,8 @@
 		7A230A0DEF48DF21D545AA71 /* Pods-PositivityTrainer-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PositivityTrainer-tvOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-PositivityTrainer-tvOS/Pods-PositivityTrainer-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		8C34C759D8274A5CB8F8E751 /* RNFirebase.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFirebase.xcodeproj; path = "../node_modules/react-native-firebase/ios/RNFirebase.xcodeproj"; sourceTree = "<group>"; };
-		9133CB0022A057D100845210 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		915718AB22A0B5C8009FFE7C /* PositivityTrainer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = PositivityTrainer.entitlements; path = PositivityTrainer/PositivityTrainer.entitlements; sourceTree = "<group>"; };
+		91D1905522A1A6EC000204FF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		91FADA1B22A064AA0045C6A0 /* RNGestureHandler.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNGestureHandler.xcodeproj; path = "../node_modules/react-native-gesture-handler/ios/RNGestureHandler.xcodeproj"; sourceTree = "<group>"; };
 		91FADA9522A0793D0045C6A0 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = "../../../../../../../../Documents/FacebookSDKs-iOS-4.40.0/FBSDKShareKit.framework"; sourceTree = "<group>"; };
 		91FADA9622A0793D0045C6A0 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = "../../../../../../../../Documents/FacebookSDKs-iOS-4.40.0/FBSDKCoreKit.framework"; sourceTree = "<group>"; };
@@ -567,7 +566,8 @@
 		13B07FAE1A68108700A75B9A /* PositivityTrainer */ = {
 			isa = PBXGroup;
 			children = (
-				27760E6A229B6FDF00F5F127 /* GoogleService-Info.plist */,
+				915718AB22A0B5C8009FFE7C /* PositivityTrainer.entitlements */,
+				91D1905522A1A6EC000204FF /* GoogleService-Info.plist */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -658,6 +658,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				91FADA1B22A064AA0045C6A0 /* RNGestureHandler.xcodeproj */,
 				91FADB4F22A080D00045C6A0 /* RCTFBSDK.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
@@ -688,8 +689,6 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				91FADA1B22A064AA0045C6A0 /* RNGestureHandler.xcodeproj */,
-				9133CB0022A057D100845210 /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* PositivityTrainer */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* PositivityTrainerTests */,
@@ -834,6 +833,14 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = XFR45HGENZ;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -1233,9 +1240,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				9133CB0122A057D100845210 /* GoogleService-Info.plist in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
-				27760E91229B6FDF00F5F127 /* GoogleService-Info.plist in Resources */,
+				91D1905622A1A6EC000204FF /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1484,6 +1490,7 @@
 			baseConfigurationReference = D8E13BB553BB18534EEFFDDE /* Pods-PositivityTrainer.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = PositivityTrainer/PositivityTrainer.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = XFR45HGENZ;
@@ -1519,6 +1526,7 @@
 			baseConfigurationReference = B2121FE3F0701D7C33F213D3 /* Pods-PositivityTrainer.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = PositivityTrainer/PositivityTrainer.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XFR45HGENZ;
 				HEADER_SEARCH_PATHS = (

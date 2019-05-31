@@ -31,7 +31,7 @@ export default class SettingsScreen extends React.Component {
           title="Logout"
           onPress={() => this.logout()}
          />
-         <Image source={{uri: this.props.user.photoURL }} style={{width: 50, height: 50}} />
+         <Image source={{uri: this.props.user.photoURL }} style={{width: 30, height: 30}} />
     </View>
     )
   }

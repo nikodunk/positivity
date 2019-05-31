@@ -1,13 +1,18 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, View, KeyboardAvoidingView, AsyncStorage, Button, SafeAreaView } from 'react-native';
+import { ScrollView, StyleSheet, Text, TextInput, View, KeyboardAvoidingView, AsyncStorage, SafeAreaView, YellowBox } from 'react-native';
 // import AsyncStorage from '@react-native-community/async-storage';
+YellowBox.ignoreWarnings(['Warning: Async', 'Remote debugger']);
 
 import Account from '../components/Account'
 
 import firebase from 'react-native-firebase';
 
 const d = new Date();
-const today = d.getFullYear() + '-' + d.getMonth() + '-' + d.getDay()
+const today = d.getFullYear() + '-' + d.getMonth()+1 + '-' + d.getDate()
+
+const questions = [
+  'What are three things you\'re thankful for today?'
+]
 
 export default class TrainerScreen extends React.Component {
 
@@ -19,8 +24,9 @@ export default class TrainerScreen extends React.Component {
     super(props);
     this.state = { 
         user: {},
-        todaysPositivity: "",
+        todaysPositivity: '',
         pastPositivity: null,
+        question: 'What are three things you\'re thankful for today?',
         saved: false
        };
     var timeout = null;
@@ -28,6 +34,8 @@ export default class TrainerScreen extends React.Component {
 
 
   componentDidMount(){
+    firebase.analytics().logEvent('PositivityScreen_Loaded')
+
     AsyncStorage.getItem('user')
       .then(user =>  {
           userObject = JSON.parse(user)
@@ -39,61 +47,63 @@ export default class TrainerScreen extends React.Component {
           });
     })
 
-          // ------------- ** FIREBASE NOTIFICATION CODE ** -----
 
-          firebase.messaging().getToken()
-          .then(fcmToken => {
-            if (fcmToken) {
-              // user has a device token
-              console.log('this is my FBCM token '+fcmToken)
-              // this.props.putToken(this.state.phoneNo, fcmToken)
-            } else {
-              // user doesn't have a device token yet
-            } 
-          });
+    // ------------- ** FIREBASE NOTIFICATION CODE ** -----
 
-        firebase.messaging().hasPermission()
-          .then(enabled => {
-            if (enabled) {
-              // user has permissions
-              console.log(enabled)
-            } else {
-              // user doesn't have permission
-              setTimeout(() => {firebase.messaging().requestPermission()
-                .then(() => {
-                  // User has authorised  
-                })
-                .catch(error => {
-                  // User has rejected permissions  
-                })}, 3000)
-            } 
-          });
+    firebase.messaging().getToken()
+    .then(fcmToken => {
+      if (fcmToken) {
+        // user has a device token
+        console.log('this is my FBCM token '+fcmToken)
+        // this.props.putToken(this.state.phoneNo, fcmToken)
+      } else {
+        // user doesn't have a device token yet
+      } 
+    });
 
-
-        //if there are any unread badgets, remove them.
-        firebase.notifications().setBadge(0)
+    firebase.messaging().hasPermission()
+      .then(enabled => {
+        if (enabled) {
+          // user has permissions
+          console.log(enabled)
+        } else {
+          // user doesn't have permission
+          setTimeout(() => {firebase.messaging().requestPermission()
+            .then(() => {
+              // User has authorised  
+            })
+            .catch(error => {
+              // User has rejected permissions  
+            })}, 3000)
+        } 
+      });
 
 
-        // not sure if below two are necessary.
-        this.notificationDisplayedListener = firebase.notifications().onNotificationDisplayed((notification: Notification) => {
-                // Process your notification as required
-                // ANDROID: Remote notifications do not contain the channel ID. You will have to specify this manually if you'd like to re-display the notification.
-            });
-        
-        this.notificationListener = firebase.notifications().onNotification((notification: Notification) => {
+    //if there are any unread badgets, remove them.
+    firebase.notifications().setBadge(0)
+
+
+    // not sure if below two are necessary.
+    this.notificationDisplayedListener = firebase.notifications().onNotificationDisplayed((notification: Notification) => {
             // Process your notification as required
-            // console.log('notif received')
+            // ANDROID: Remote notifications do not contain the channel ID. You will have to specify this manually if you'd like to re-display the notification.
         });
+    
+    this.notificationListener = firebase.notifications().onNotification((notification: Notification) => {
+        // Process your notification as required
+        // console.log('notif received')
+    });
 
 
-        // ------------- ** END FIREBASE NOTIFICATION CODE ** -----
+    // ------------- ** END FIREBASE NOTIFICATION CODE ** -----
+          
     
   }
 
 
   storePositivity(user, positivity) {
     // console.log(user.uid, positivity)
-    this.setState({todaysPositivity: positivity})
+    this.setState({todaysPositivity: positivity, saved: false})
 
     clearTimeout(this.timeout);
 
@@ -107,7 +117,7 @@ export default class TrainerScreen extends React.Component {
         }
         this.setState({saved: true})
         this.timeout = setTimeout(() => { this.setState({saved: false}) }, 1000)
-    }, 1000);
+    }, 2000);
     
   }
 
@@ -143,8 +153,13 @@ export default class TrainerScreen extends React.Component {
 
 
               <View style={styles.element}>
-                <Text style={styles.center}>Hi, {this.state.user.displayName}! What are three things you're thankful for today?</Text>
+                <Text style={styles.center}>Hi, {this.state.user.displayName}!</Text>
                 <Text></Text>
+                <Text>
+                  {this.state.question}
+                  {' '}
+                  {this.state.saved ? <Text>💾</Text> : null }
+                </Text>
                 <TextInput 
                   multiline={true}
                   value={this.state.todaysPositivity}
@@ -152,8 +167,7 @@ export default class TrainerScreen extends React.Component {
                   style={styles.textInput}
                   // autoFocus={true}
                   />
-                {/* <Button title={'Save'} onPress={() => this.storePositivity(this.state.user, this.state.todaysPositivity)}/> */}
-                {this.state.saved ? <Text>saved!</Text> : null }
+                
               </View> 
 
 
@@ -188,17 +202,19 @@ const styles = StyleSheet.create({
   element:{
     margin: 20,
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'flex-start'
   },
   textInput:{
     borderWidth: 1,
     borderColor: 'lightgrey',
     width: '100%',
     height: 'auto',
-    textAlign: 'center',
-    borderRadius: 10
+    textAlign: 'left',
+    borderRadius: 10,
+    padding: 10,
+    marginTop: 5
   },
   center: {
-    textAlign: 'center'
+    textAlign: 'left'
   }
 });
