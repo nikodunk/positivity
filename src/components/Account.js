@@ -3,9 +3,6 @@ import { View, Button, Image } from 'react-native';
 
 import firebase from 'react-native-firebase';
 
-
-
-
 export default class SettingsScreen extends React.Component {
   static navigationOptions = {
     title: 'Settings',
@@ -29,7 +26,7 @@ export default class SettingsScreen extends React.Component {
     /* Go ahead and delete ExpoConfigView and replace it with your
      * content, we just wanted to give you a quick view of your config */
     return (
-    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', borderWidth: 1}}>
+    <View style={{ flexDirection: 'row', justifyContent: 'flex-end'}}>
         <Button
           title="Logout"
           onPress={() => this.logout()}
@@ -38,4 +35,5 @@ export default class SettingsScreen extends React.Component {
     </View>
     )
   }
+
 }
