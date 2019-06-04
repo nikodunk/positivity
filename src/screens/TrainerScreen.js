@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, View, KeyboardAvoidingView, AsyncStorage, SafeAreaView, YellowBox } from 'react-native';
+import { ScrollView, StyleSheet, Text, TextInput, View, KeyboardAvoidingView, AsyncStorage, SafeAreaView, YellowBox, AppState, ActivityIndicator } from 'react-native';
 // import AsyncStorage from '@react-native-community/async-storage';
 YellowBox.ignoreWarnings(['Warning: Async', 'Remote debugger']);
 
@@ -18,7 +18,10 @@ const questions = [
   'What are 2 things you have today that you would never have dreamed of having 10 years ago?',
   'What good things have you achieved that your childhood self would have never believed?',
   'What\'s better about your life now that it was a decade ago?',
-  'What\'s 2 things you admire about someone you dislike?'
+  'What\'s 2 things you admire about someone you dislike?',
+  'Name 3 good things that happened to you today.',
+  'What are you doing excellently at in your life right now?',
+  'What are you thankful for in a partner or a friend? Have you told them?'
 ]
 
 export default class TrainerScreen extends React.Component {
@@ -34,16 +37,35 @@ export default class TrainerScreen extends React.Component {
         todaysPositivity: '',
         todaysQuestion: '',
         pastPositivity: [],
-        saved: false
+        saved: false,
+        appState: AppState.currentState
        };
     var timeout = null;
   }
 
+  componentWillMount(){
+    this.getUserAndSetupData()
+
+  }
 
   componentDidMount(){
     firebase.analytics().logEvent('PositivityScreen_Loaded')
+    AppState.addEventListener('change', this._handleAppStateChange);
+    this._firebaseNotifSetup()
+  }
 
-    // GET USER
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange);
+  }
+
+  _handleAppStateChange = (nextAppState) => {
+    if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+      this.getUserAndSetupData()
+    }
+    this.setState({appState: nextAppState});
+  }
+
+  getUserAndSetupData() {
     AsyncStorage.getItem('user')
       .then(user =>  {
           userObject = JSON.parse(user)
@@ -57,44 +79,41 @@ export default class TrainerScreen extends React.Component {
             this._makePositivityStates(snapshot.val())
           });
     })
+  }
 
+  _firebaseNotifSetup(){
 
-    // ------------- ** FIREBASE NOTIFICATION CODE ** -----
-
-    firebase.messaging().getToken()
-    .then(fcmToken => {
-      if (fcmToken) {
-        // user has a device token
-        console.log('this is my FBCM token '+fcmToken)
-        // this.props.putToken(this.state.phoneNo, fcmToken)
-      } else {
-        // user doesn't have a device token yet
-      } 
-    });
-
-    firebase.messaging().hasPermission()
-      .then(enabled => {
-        if (enabled) {
-          // user has permissions
-          console.log(enabled)
-        } else {
-          // user doesn't have permission
-          setTimeout(() => {firebase.messaging().requestPermission()
-            .then(() => {
-              // User has authorised  
-            })
-            .catch(error => {
-              // User has rejected permissions  
-            })}, 3000)
-        } 
-      });
-
-
-    //if there are any unread badgets, remove them.
-    firebase.notifications().setBadge(0)
-
-    // ------------- ** END FIREBASE NOTIFICATION CODE ** -----
-          
+        firebase.messaging().getToken()
+        .then(fcmToken => {
+          if (fcmToken) {
+            // user has a device token
+            console.log('this is my FBCM token '+fcmToken)
+            // this.props.putToken(this.state.phoneNo, fcmToken)
+          } else {
+            // user doesn't have a device token yet
+          } 
+        });
+    
+        firebase.messaging().hasPermission()
+          .then(enabled => {
+            if (enabled) {
+              // user has permissions
+              console.log(enabled)
+            } else {
+              // user doesn't have permission
+              setTimeout(() => {firebase.messaging().requestPermission()
+                .then(() => {
+                  // User has authorised  
+                })
+                .catch(error => {
+                  // User has rejected permissions  
+                })}, 3000)
+            } 
+          });
+    
+    
+        //if there are any unread badgets, remove them.
+        firebase.notifications().setBadge(0)
     
   }
 
@@ -145,12 +164,13 @@ export default class TrainerScreen extends React.Component {
 
   storePositivity(text) {
     // console.log(user.uid, text)
-    this.setState({todaysPositivity: text, saved: false})
+    this.setState({todaysPositivity: text, saving: false, saved: false})
 
     clearTimeout(this.timeout);
 
-    // Make a new timeout set to go off in 800ms
+    // Make a new timeout set to go off in 2000ms
     this.timeout = setTimeout(() => {
+        this.setState({saving: true, saved: false})
         if (this.state.user != null) {
           firebase.database().ref('users/' + this.state.user.uid + '/' + today ).set({
             positivity: this.state.todaysPositivity,
@@ -158,10 +178,18 @@ export default class TrainerScreen extends React.Component {
             question: this.state.todaysQuestion
           });
         }
-        this.setState({saved: true})
+        this.setState({saving: false, saved: true})
         this.timeout = setTimeout(() => { this.setState({saved: false}) }, 1000)
     }, 2000);
     
+  }
+
+  _getBackgroundColor(){
+    const colors = [
+      '#abcdef', '#bedcaf', '#cafedb', '#decafb'
+    ]
+    const randomNumber = Math.floor(Math.random() * colors.length)
+    return colors[randomNumber]
   }
 
   
@@ -176,37 +204,41 @@ export default class TrainerScreen extends React.Component {
 
 
               <View style={styles.element}>
-                <Text style={styles.center}>Hi, {this.state.user.displayName}!</Text>
+                <Text style={styles.center}>Hi, {this.state.user.displayName}! Today's question is</Text>
                 <Text></Text>
-                {this.state.todaysQuestion ? 
-                  <Text>
-                    {this.state.todaysQuestion}
-                    {' '}
-                    {this.state.saved ? <Text>💾</Text> : null }
-                  </Text>
-                : null }
+
+                <Text style={styles.question}>
+                  {this.state.todaysQuestion}
+                </Text>
+                <Text></Text>
+                <Text>Your answer</Text>
+                  
                 <TextInput 
                   multiline={true}
                   value={this.state.todaysPositivity}
                   placeholder={'Answer here...'}
                   onChangeText={(text) => this.storePositivity(text)}
-                  style={styles.textInput}
+                  style={[ styles.textInput, { backgroundColor: this._getBackgroundColor()} ]}
                   />
+                <View>
+                    {this.state.saved ? <Text style={{color: 'green'}}>Saved!</Text> : <Text> </Text> }
+                    {this.state.saving ? <ActivityIndicator /> : null }
+                </View>
                 
               </View> 
 
 
               { this.state.pastPositivity.length > 0 ?
                 <View style={styles.element}>
-                  <Text>Past Positivities:</Text>
+                  <Text>Past positivities</Text>
                 </View>
                : null }
 
               { this.state.pastPositivity.length > 0 ? 
                   this.state.pastPositivity.map((item, key) => 
                   <View style={styles.element} key={key}>
-                    <Text>{item.question}</Text>
-                    <Text style={styles.center}>{item.positivity}</Text>
+                    <Text style={styles.question}>{item.question}</Text>
+                    <Text style={[styles.positivity, { backgroundColor: this._getBackgroundColor()} ]}>{item.positivity}</Text>
                   </View>
                   )
               : null }
@@ -224,19 +256,28 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   element:{
-    margin: 20,
+    margin: 20
   },
   textInput:{
-    borderWidth: 1,
-    borderColor: 'lightgrey',
+    borderColor: 'grey',
+    borderWidth: 5,
+    borderRadius: 10,
+    backgroundColor: '#decafb',
     width: '100%',
     height: 'auto',
-    textAlign: 'left',
-    borderRadius: 10,
-    padding: 10,
-    marginTop: 5
+    padding: 20,
+    marginTop: 5,
+    fontSize: 20
   },
-  center: {
-    textAlign: 'left'
+  question: {
+    fontSize: 30
+  },
+  positivity: {
+    width: '100%',
+    height: 'auto',
+    borderRadius: 10,
+    padding: 20,
+    marginTop: 5,
+    fontSize: 20
   }
 });

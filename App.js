@@ -9,7 +9,7 @@ export default class App extends React.Component {
 
   render() {
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, {backgroundColor: '#fad168'}]}>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
           <AppNavigator />
         </View>
