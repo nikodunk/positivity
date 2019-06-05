@@ -3,14 +3,12 @@ import { Button, ScrollView, StyleSheet, Text, TextInput, View, KeyboardAvoiding
 // import AsyncStorage from '@react-native-community/async-storage';
 YellowBox.ignoreWarnings(['Warning: Async', 'Remote debugger']);
 import * as Animatable from 'react-native-animatable';
+import Purchases from 'react-native-purchases';
+
 
 import Account from '../components/Account'
 
 import firebase from 'react-native-firebase';
-
-// make date in format 2019-05-31
-const d = new Date();
-const today = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
 
 // this is the library of questions. add freely to them – how many there are doesn't matter!
 const questions = [
@@ -48,7 +46,6 @@ export default class TrainerScreen extends React.Component {
 
   componentWillMount(){
     this.getUserAndSetupData()
-
   }
 
   componentDidMount(){
@@ -77,6 +74,11 @@ export default class TrainerScreen extends React.Component {
           userObject = JSON.parse(user)
           this.setState({user: userObject })
           // console.log(userObject.uid)
+          Purchases.setDebugLogsEnabled(true);
+          Purchases.setup("hyjasKNFjgNBbqSGJkYPqnxymzypYArR", userObject.uid);
+          Purchases.getEntitlements().then(entitlements => console.log(entitlements))
+
+          
           
           // GET THEIR DATA
           firebase.database().ref('users/' + userObject.uid + '/').on('value', (snapshot) => {
@@ -121,12 +123,20 @@ export default class TrainerScreen extends React.Component {
         firebase.notifications().setBadge(0)
   }
 
+  _getToday(){
+    // make date in format 2019-05-31
+    let d = new Date();
+    let today = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
+    return today
+  }
+
 
   _makePositivityStates(data){
-    var pastPositivity = []
-    var todaysPositivity = ''
-    var todaysQuestion = ''
-    
+    let pastPositivity = []
+    let todaysPositivity = ''
+    let todaysQuestion = ''
+    let today = this._getToday()
+
     for (var key in data){
       if (key === today) {
         // if the item is today's positivity – push it to string
@@ -168,23 +178,19 @@ export default class TrainerScreen extends React.Component {
 
   storePositivity() {
     // console.log(user.uid, text)
-    // this.setState({saving: false, saved: false})
+    let today = this._getToday()
 
-    // clearTimeout(this.timeout);
+    this.setState({saving: true, saved: false})
 
-    // Make a new timeout set to go off in 2000ms
-    // this.timeout = setTimeout(() => {
-        this.setState({saving: true, saved: false})
-        // if (this.state.user != null) {
-          firebase.database().ref('users/' + this.state.user.uid + '/' + today ).set({
-            positivity: this.state.todaysPositivity,
-            created: today,
-            question: this.state.todaysQuestion
-          });
-        // }
-        this.setState({ saving: false, saved: true})
-        this.timeout = setTimeout(() => { this.setState({saved: false}) }, 1000)
-    // }, 2000);
+    firebase.database().ref('users/' + this.state.user.uid + '/' + today ).set({
+      positivity: this.state.todaysPositivity,
+      created: today,
+      question: this.state.todaysQuestion
+    });
+
+    this.setState({ saving: false, saved: true})
+    this.timeout = setTimeout(() => { this.setState({saved: false}) }, 1000)
+
     
   }
 

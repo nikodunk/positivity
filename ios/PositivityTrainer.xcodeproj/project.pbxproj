@@ -40,6 +40,10 @@
 		66F583A38C047519D1E18159 /* libPods-PositivityTrainer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 599A1087F9C545123EFD61BE /* libPods-PositivityTrainer.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		8AEB10120B9847F8905B7DA1 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C97DD56AE46E45398AF70E2E /* libRNFirebase.a */; };
+		9101541022A75B3400E1B228 /* Purchases.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9101540F22A75B3400E1B228 /* Purchases.framework */; };
+		9101541122A75B6500E1B228 /* Purchases.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9101540F22A75B3400E1B228 /* Purchases.framework */; };
+		9101541222A75B6500E1B228 /* Purchases.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9101540F22A75B3400E1B228 /* Purchases.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9101541522A75C4400E1B228 /* libRNPurchases.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9101540E22A75B1100E1B228 /* libRNPurchases.a */; };
 		91D1905622A1A6EC000204FF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 91D1905522A1A6EC000204FF /* GoogleService-Info.plist */; };
 		91FADA4A22A064B80045C6A0 /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 91FADA4722A064AA0045C6A0 /* libRNGestureHandler.a */; };
 		91FADBB622A0836E0045C6A0 /* libFBSDKCoreKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 91FADBB522A0836E0045C6A0 /* libFBSDKCoreKit.a */; };
@@ -325,6 +329,13 @@
 			remoteGlobalIDString = 58B5119B1A9E6C1200147676;
 			remoteInfo = RCTText;
 		};
+		9101540D22A75B1100E1B228 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9101540922A75B1000E1B228 /* RNPurchases.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNPurchases;
+		};
 		91FADA4622A064AA0045C6A0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 91FADA1B22A064AA0045C6A0 /* RNGestureHandler.xcodeproj */;
@@ -354,6 +365,20 @@
 			remoteInfo = RCTBlob;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		9101541322A75B6500E1B228 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				9101541222A75B6500E1B228 /* Purchases.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
@@ -387,6 +412,8 @@
 		7A230A0DEF48DF21D545AA71 /* Pods-PositivityTrainer-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PositivityTrainer-tvOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-PositivityTrainer-tvOS/Pods-PositivityTrainer-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		8C34C759D8274A5CB8F8E751 /* RNFirebase.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFirebase.xcodeproj; path = "../node_modules/react-native-firebase/ios/RNFirebase.xcodeproj"; sourceTree = "<group>"; };
+		9101540922A75B1000E1B228 /* RNPurchases.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNPurchases.xcodeproj; path = "../node_modules/react-native-purchases/ios/RNPurchases.xcodeproj"; sourceTree = "<group>"; };
+		9101540F22A75B3400E1B228 /* Purchases.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Purchases.framework; path = "../node_modules/react-native-purchases/ios/Purchases.framework"; sourceTree = "<group>"; };
 		915718AB22A0B5C8009FFE7C /* PositivityTrainer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = PositivityTrainer.entitlements; path = PositivityTrainer/PositivityTrainer.entitlements; sourceTree = "<group>"; };
 		91D1905522A1A6EC000204FF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		91FADA1B22A064AA0045C6A0 /* RNGestureHandler.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNGestureHandler.xcodeproj; path = "../node_modules/react-native-gesture-handler/ios/RNGestureHandler.xcodeproj"; sourceTree = "<group>"; };
@@ -429,8 +456,10 @@
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				11D1A2F320CAFA9E000508D9 /* libRCTAnimation.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
+				9101541122A75B6500E1B228 /* Purchases.framework in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
+				9101541522A75C4400E1B228 /* libRNPurchases.a in Frameworks */,
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
 				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
@@ -440,6 +469,7 @@
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				66F583A38C047519D1E18159 /* libPods-PositivityTrainer.a in Frameworks */,
 				8AEB10120B9847F8905B7DA1 /* libRNFirebase.a in Frameworks */,
+				9101541022A75B3400E1B228 /* Purchases.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -665,6 +695,7 @@
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
 				ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */,
 				00C302B51ABCB90400DB3ED1 /* RCTGeolocation.xcodeproj */,
+				9101540922A75B1000E1B228 /* RNPurchases.xcodeproj */,
 				00C302BB1ABCB91800DB3ED1 /* RCTImage.xcodeproj */,
 				78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */,
 				00C302D31ABCB9D200DB3ED1 /* RCTNetwork.xcodeproj */,
@@ -689,6 +720,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				9101540F22A75B3400E1B228 /* Purchases.framework */,
 				13B07FAE1A68108700A75B9A /* PositivityTrainer */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* PositivityTrainerTests */,
@@ -709,6 +741,14 @@
 				00E356EE1AD99517003FC87E /* PositivityTrainerTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* PositivityTrainer-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* PositivityTrainer-tvOSTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9101540A22A75B1000E1B228 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9101540E22A75B1100E1B228 /* libRNPurchases.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -770,6 +810,8 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				E5B4B8AE4D595D54AD312DFD /* [CP] Copy Pods Resources */,
+				9101541322A75B6500E1B228 /* Embed Frameworks */,
+				9101541422A75BC900E1B228 /* Strip Framework */,
 			);
 			buildRules = (
 			);
@@ -925,6 +967,10 @@
 				{
 					ProductGroup = 91FADA1C22A064AA0045C6A0 /* Products */;
 					ProjectRef = 91FADA1B22A064AA0045C6A0 /* RNGestureHandler.xcodeproj */;
+				},
+				{
+					ProductGroup = 9101540A22A75B1000E1B228 /* Products */;
+					ProjectRef = 9101540922A75B1000E1B228 /* RNPurchases.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -1197,6 +1243,13 @@
 			remoteRef = 832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		9101540E22A75B1100E1B228 /* libRNPurchases.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNPurchases.a;
+			remoteRef = 9101540D22A75B1100E1B228 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		91FADA4722A064AA0045C6A0 /* libRNGestureHandler.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1326,6 +1379,24 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
+		};
+		9101541422A75BC900E1B228 /* Strip Framework */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Strip Framework";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PROJECT_DIR}/../node_modules/react-native-purchases/ios/strip-frameworks.sh\"\n";
 		};
 		E5B4B8AE4D595D54AD312DFD /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1503,6 +1574,7 @@
 					"\"${PODS_ROOT}/FirebasePerformance/Frameworks\"",
 					"\"${PODS_ROOT}/FirebaseRemoteConfig/Frameworks\"",
 					"\"${PODS_ROOT}/GoogleAppMeasurement/Frameworks\"",
+					"$(PROJECT_DIR)/../node_modules/react-native-purchases/ios",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1530,6 +1602,18 @@
 				CODE_SIGN_ENTITLEMENTS = PositivityTrainer/PositivityTrainer.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XFR45HGENZ;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Crashlytics/iOS\"",
+					"\"${PODS_ROOT}/FBSDKMarketingKit\"",
+					"\"${PODS_ROOT}/Fabric/iOS\"",
+					"\"${PODS_ROOT}/FirebaseABTesting/Frameworks\"",
+					"\"${PODS_ROOT}/FirebaseAnalytics/Frameworks\"",
+					"\"${PODS_ROOT}/FirebasePerformance/Frameworks\"",
+					"\"${PODS_ROOT}/FirebaseRemoteConfig/Frameworks\"",
+					"\"${PODS_ROOT}/GoogleAppMeasurement/Frameworks\"",
+					"$(PROJECT_DIR)/../node_modules/react-native-purchases/ios",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",

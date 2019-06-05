@@ -3,6 +3,7 @@ package com.bigsetsoftware.positivitytrainer;
 import android.support.multidex.MultiDexApplication;
 
 import com.facebook.react.ReactApplication;
+import com.reactlibrary.RNPurchasesPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.facebook.react.ReactNativeHost;
@@ -43,6 +44,7 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
         new MainReactPackage(),
+            new RNPurchasesPackage(),
             new AsyncStoragePackage(),
             new FBSDKPackage(),
         new RNFirebasePackage(),
