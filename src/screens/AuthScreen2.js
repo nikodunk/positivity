@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, AsyncStorage, Text, Button } from 'react-native';
+import { StyleSheet, View, AsyncStorage, ActivityIndicator, KeyboardAvoidingView, Button } from 'react-native';
 import { SafeAreaView } from 'react-navigation'
 
 // https://docs.expo.io/versions/latest/guides/using-firebase/
@@ -33,33 +33,59 @@ class AuthScreen extends React.Component {
       })
   }
 
+  _firebaseNotifSetup(){
+
+    firebase.messaging().getToken()
+    .then(fcmToken => {
+      if (fcmToken) {
+        // user has a device token
+        console.log('this is my FBCM token '+fcmToken)
+        // this.props.putToken(this.state.phoneNo, fcmToken)
+      } else {
+        // user doesn't have a device token yet
+      } 
+    });
+
+    firebase.messaging().hasPermission()
+      .then(enabled => {
+        if (enabled) {
+          // user has permissions
+          console.log(enabled)
+          this.props.navigation.navigate("AuthScreen3")
+        } else {
+          // user doesn't have permission
+          firebase.messaging().requestPermission()
+            .then(() => {
+              // User has authorised  
+              this.props.navigation.navigate("AuthScreen3")
+            })
+            .catch(error => {
+              // User has rejected permissions
+              this.props.navigation.navigate("AuthScreen3")
+            })
+        } 
+      });
+
+    //if there are any unread badgets, remove them.
+    firebase.notifications().setBadge(0)
+
+  }
 
 
   render() {
     return (
 
-
+    <KeyboardAvoidingView behavior="padding" enabled>
       <Animatable.View animation="fadeIn" duration={1000}>
-        
-          <Text>Welcome to Positivity Trainer! </Text>
-          <Text>Sometimes, it feels like all we do is focus on the negative.</Text>
-          <Text>Yet so many good things are also happening in the world.</Text>
-          <Text>It's been proven that if we focus on the positive then we are happier.</Text>
-          
-          <Text>We ask you a question like this every day:</Text>
-          <Text>What thing made you smile today?</Text>
-          <Text>To do this, we'll need</Text>
-          <Text>Notifications (so we can remind you to pactice 1x/day)</Text>
-          <Text>Facebook (so you can acces your diary if it gets lost)</Text>
         <View style={styles.border}>
-          <Button 
-            title="Next"
-            onPress={() => this.props.navigation.navigate('AuthScreen2')}
+          <Button
+            onPress={() => this._firebaseNotifSetup()}
+            title="Allow a daily reminder"
             />
         </View>
       </Animatable.View>
 
-
+    </KeyboardAvoidingView>
 
 
       );

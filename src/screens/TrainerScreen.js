@@ -1,7 +1,8 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, View, KeyboardAvoidingView, AsyncStorage, SafeAreaView, YellowBox, AppState, ActivityIndicator } from 'react-native';
+import { Button, ScrollView, StyleSheet, Text, TextInput, View, KeyboardAvoidingView, AsyncStorage, YellowBox, AppState, ActivityIndicator } from 'react-native';
 // import AsyncStorage from '@react-native-community/async-storage';
 YellowBox.ignoreWarnings(['Warning: Async', 'Remote debugger']);
+import * as Animatable from 'react-native-animatable';
 
 import Account from '../components/Account'
 
@@ -20,6 +21,7 @@ const questions = [
   'What\'s better about your life now that it was a decade ago?',
   'What\'s 2 things you admire about someone you dislike?',
   'Name 3 good things that happened to you today.',
+  'What made you smile today?',
   'What are you doing excellently at in your life right now?',
   'What are you thankful for in a partner or a friend? Have you told them?'
 ]
@@ -38,7 +40,8 @@ export default class TrainerScreen extends React.Component {
         todaysQuestion: '',
         pastPositivity: [],
         saved: false,
-        appState: AppState.currentState
+        appState: AppState.currentState,
+        showPast: false
        };
     var timeout = null;
   }
@@ -111,10 +114,8 @@ export default class TrainerScreen extends React.Component {
             } 
           });
     
-    
         //if there are any unread badgets, remove them.
         firebase.notifications().setBadge(0)
-    
   }
 
 
@@ -192,82 +193,102 @@ export default class TrainerScreen extends React.Component {
     return colors[randomNumber]
   }
 
-  
   render() {
 
     return (
-      <SafeAreaView style={{flex: 1}}>
-        <View style={styles.container}>
-          <KeyboardAvoidingView style={styles.container} behavior={"padding"} enabled>
-            <Account user={this.state.user} />
-            <ScrollView style={{flex: 1}} >
+      <View style={styles.container}>
+        <KeyboardAvoidingView style={styles.container} behavior={"padding"} enabled>
+          <ScrollView style={{flex: 1}} >
 
+            <Animatable.View duration={1000} transition="opacity" style={{opacity: this.state.showPast ? 1 : 0 }}>
+              <Account user={this.state.user} visible={this.state.showPast} />
+            </Animatable.View>
 
-              <View style={styles.element}>
-                <Text style={styles.center}>Hi, {this.state.user.displayName}! Today's question is</Text>
-                <Text></Text>
-
+              <View style={{ backgroundColor: this.state.backgroundColor, padding: 30}} >
+                <Text style={styles.center}>👇 Today's question</Text>
                 <Text style={styles.question}>
                   {this.state.todaysQuestion}
                 </Text>
                 <Text></Text>
-                <Text>Your answer</Text>
-                  
-                <TextInput 
-                  multiline={true}
-                  value={this.state.todaysPositivity}
-                  placeholder={'Answer here...'}
-                  onChangeText={(text) => this.storePositivity(text)}
-                  style={[ styles.textInput, { backgroundColor: this._getBackgroundColor()} ]}
-                  />
-                <View>
-                    {this.state.saved ? <Text style={{color: 'green'}}>Saved!</Text> : <Text> </Text> }
+                
+                <Animatable.View
+                  animation="fadeIn"
+                  delay={3000} 
+                  duration={1000}>
+                  <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <Text>🙂 Your answer – tap below to type.</Text>
+                    {this.state.saved ? <Text style={{}}>Saved ✅</Text> : <Text> </Text> }
                     {this.state.saving ? <ActivityIndicator /> : null }
+                  </View>
+                  <TextInput 
+                    multiline={true}
+                    value={this.state.todaysPositivity}
+                    placeholder={'Answer here...'}
+                    onChangeText={(text) => this.storePositivity(text)}
+                    style={ styles.textInput }
+                    />
+                </Animatable.View>
+                <View>
                 </View>
                 
               </View> 
 
-
-              { this.state.pastPositivity.length > 0 ?
-                <View style={styles.element}>
-                  <Text>Past positivities</Text>
+              <Animatable.View style={styles.accountBar} animation="fadeIn" delay={5000} duration={3000}>
+                
+                {this.state.showPast ? 
+                <View>
+                  <Text style={{paddingTop: 30, padding: 10}}>
+                    Past positivities
+                  </Text>
+              
+                  { this.state.pastPositivity.length > 0 ? 
+                      this.state.pastPositivity.map((item, key) => 
+                      <Animatable.View
+                        animation="slideInLeft" 
+                        duration={1000-(key*300)}
+                        style={{ backgroundColor: this._getBackgroundColor(), padding: 30, borderBottomWidth: 1, borderBottomColor: 'grey' }} key={key}
+                        >
+                          <Text style={{}}>
+                            {item.question}
+                          </Text>
+                          <Text style={styles.question}>
+                            {item.positivity}
+                          </Text>
+                      </Animatable.View>
+                      )
+                    : null }
+                </View> :
+                <View style={{marginTop: 30}}>
+                  <Button onPress={() => this.setState({showPast: true})} title="See all the past things you've been thankful for" />
                 </View>
-               : null }
+                }
 
-              { this.state.pastPositivity.length > 0 ? 
-                  this.state.pastPositivity.map((item, key) => 
-                  <View style={styles.element} key={key}>
-                    <Text style={styles.question}>{item.question}</Text>
-                    <Text style={[styles.positivity, { backgroundColor: this._getBackgroundColor()} ]}>{item.positivity}</Text>
-                  </View>
-                  )
-              : null }
+              </ Animatable.View>
 
             </ScrollView>
         </KeyboardAvoidingView>
-      </View>
-    </SafeAreaView>
+    </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
   },
   element:{
     margin: 20
   },
   textInput:{
-    borderColor: 'grey',
-    borderWidth: 5,
-    borderRadius: 10,
-    backgroundColor: '#decafb',
     width: '100%',
     height: 'auto',
     padding: 20,
     marginTop: 5,
-    fontSize: 20
+    fontSize: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'lightgrey'
   },
   question: {
     fontSize: 30
@@ -275,7 +296,6 @@ const styles = StyleSheet.create({
   positivity: {
     width: '100%',
     height: 'auto',
-    borderRadius: 10,
     padding: 20,
     marginTop: 5,
     fontSize: 20

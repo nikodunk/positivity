@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, AsyncStorage, Text, Button } from 'react-native';
+import { StyleSheet, View, AsyncStorage, ActivityIndicator, KeyboardAvoidingView, Button } from 'react-native';
 import { SafeAreaView } from 'react-navigation'
 
 // https://docs.expo.io/versions/latest/guides/using-firebase/
@@ -33,33 +33,53 @@ class AuthScreen extends React.Component {
       })
   }
 
+  async facebookLogin() {
+
+    try {
+      const result = await LoginManager.logInWithReadPermissions(['public_profile', 'email']);
+  
+      if (result.isCancelled) {
+        // handle this however suites the flow of your app
+        throw new Error('User cancelled request'); 
+      }
+  
+      console.log(`Login success with permissions: ${result.grantedPermissions.toString()}`);
+  
+      // get the access token
+      const data = await AccessToken.getCurrentAccessToken();
+  
+      if (!data) {
+        // handle this however suites the flow of your app
+        throw new Error('Something went wrong obtaining the users access token');
+      }
+  
+      // create a new firebase credential with the token
+      const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
+  
+      // login with credential
+      const firebaseUserCredential = await firebase.auth().signInWithCredential(credential);
+  
+      console.warn(JSON.stringify(firebaseUserCredential.user.toJSON()))
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
 
   render() {
     return (
 
-
+    <KeyboardAvoidingView behavior="padding" enabled>
       <Animatable.View animation="fadeIn" duration={1000}>
-        
-          <Text>Welcome to Positivity Trainer! </Text>
-          <Text>Sometimes, it feels like all we do is focus on the negative.</Text>
-          <Text>Yet so many good things are also happening in the world.</Text>
-          <Text>It's been proven that if we focus on the positive then we are happier.</Text>
-          
-          <Text>We ask you a question like this every day:</Text>
-          <Text>What thing made you smile today?</Text>
-          <Text>To do this, we'll need</Text>
-          <Text>Notifications (so we can remind you to pactice 1x/day)</Text>
-          <Text>Facebook (so you can acces your diary if it gets lost)</Text>
         <View style={styles.border}>
-          <Button 
-            title="Next"
-            onPress={() => this.props.navigation.navigate('AuthScreen2')}
+          <Button
+            onPress={() => this.facebookLogin()}
+            title="Login with Facebook"
             />
         </View>
       </Animatable.View>
 
-
+    </KeyboardAvoidingView>
 
 
       );
