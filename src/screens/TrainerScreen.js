@@ -14,10 +14,12 @@ import firebase from 'react-native-firebase';
 const questions = [
   'What made you smile today?',
   'What are three things you\'re thankful for today?',
+  'Name 2 things you\'re thankful for today!',
+  'Please name 3 things you\'re thankful for today?',
   'What are 2 things you have today that you would never have dreamed of having 10 years ago?',
   'What good things have you achieved that your childhood self would have never believed?',
   'What\'s better about your life now that it was a decade ago?',
-  'What\'s 2 things you admire about someone you dislike?',
+  'What are 2 things you admire about someone you dislike?',
   'Name 3 good things that happened to you today.',
   'What made you smile today?',
   'What are you doing excellently at in your life right now?',
