@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, View, AsyncStorage, ActivityIndicator, KeyboardAvoidingView, Button } from 'react-native';
-import { SafeAreaView } from 'react-navigation'
+import { Text, StyleSheet, View, AsyncStorage, KeyboardAvoidingView, Button } from 'react-native';
+
 
 // https://docs.expo.io/versions/latest/guides/using-firebase/
 
@@ -16,6 +16,10 @@ import firebase from 'react-native-firebase';
 import { AccessToken, LoginManager } from 'react-native-fbsdk';
 
 class AuthScreen extends React.Component {
+
+  static navigationOptions = {
+    title: 'Get an Account'
+  };
 
   constructor(props) {
     super(props);
@@ -69,8 +73,10 @@ class AuthScreen extends React.Component {
   render() {
     return (
 
-    <KeyboardAvoidingView behavior="padding" enabled>
-      <Animatable.View animation="fadeIn" duration={1000}>
+
+      <Animatable.View animation="fadeIn" duration={1000} style={{backgroundColor: '#fad168', padding: 20, flex: 1}}>
+        <Text>Finally, please sign up with Facebook so you can save your answers (nothing will be shared) and we can re-access your data if you lose your phone. We won't share your information or email you.</Text>
+        <Text> </Text>
         <View style={styles.border}>
           <Button
             onPress={() => this.facebookLogin()}
@@ -79,7 +85,7 @@ class AuthScreen extends React.Component {
         </View>
       </Animatable.View>
 
-    </KeyboardAvoidingView>
+
 
 
       );

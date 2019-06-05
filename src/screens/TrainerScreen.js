@@ -64,6 +64,9 @@ export default class TrainerScreen extends React.Component {
   _handleAppStateChange = (nextAppState) => {
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
       this.getUserAndSetupData()
+      //if there are any unread badgets, remove them.
+      firebase.notifications().setBadge(0)
+      this.setState({showPast: false})
     }
     this.setState({appState: nextAppState});
   }
@@ -163,25 +166,25 @@ export default class TrainerScreen extends React.Component {
     return questions[randomNumber]
   }
 
-  storePositivity(text) {
+  storePositivity() {
     // console.log(user.uid, text)
-    this.setState({todaysPositivity: text, saving: false, saved: false})
+    // this.setState({saving: false, saved: false})
 
-    clearTimeout(this.timeout);
+    // clearTimeout(this.timeout);
 
     // Make a new timeout set to go off in 2000ms
-    this.timeout = setTimeout(() => {
+    // this.timeout = setTimeout(() => {
         this.setState({saving: true, saved: false})
-        if (this.state.user != null) {
+        // if (this.state.user != null) {
           firebase.database().ref('users/' + this.state.user.uid + '/' + today ).set({
             positivity: this.state.todaysPositivity,
             created: today,
             question: this.state.todaysQuestion
           });
-        }
-        this.setState({saving: false, saved: true})
+        // }
+        this.setState({ saving: false, saved: true})
         this.timeout = setTimeout(() => { this.setState({saved: false}) }, 1000)
-    }, 2000);
+    // }, 2000);
     
   }
 
@@ -198,7 +201,7 @@ export default class TrainerScreen extends React.Component {
     return (
       <View style={styles.container}>
         <KeyboardAvoidingView style={styles.container} behavior={"padding"} enabled>
-          <ScrollView style={{flex: 1}} >
+          <ScrollView style={{flex: 1}} keyboardShouldPersistTaps={'handled'}>
 
             <Animatable.View duration={1000} transition="opacity" style={{opacity: this.state.showPast ? 1 : 0 }}>
               <Account user={this.state.user} visible={this.state.showPast} />
@@ -224,9 +227,12 @@ export default class TrainerScreen extends React.Component {
                     multiline={true}
                     value={this.state.todaysPositivity}
                     placeholder={'Answer here...'}
-                    onChangeText={(text) => this.storePositivity(text)}
+                    onChangeText={(text) => this.setState({todaysPositivity: text})}
                     style={ styles.textInput }
                     />
+                  <Button
+                    onPress={() => this.storePositivity()}
+                    title="Save" />
                 </Animatable.View>
                 <View>
                 </View>
@@ -259,7 +265,7 @@ export default class TrainerScreen extends React.Component {
                     : null }
                 </View> :
                 <View style={{marginTop: 30}}>
-                  <Button onPress={() => this.setState({showPast: true})} title="See all the past things you've been thankful for" />
+                  <Button onPress={() => this.setState({showPast: true})} title="See everything you've been thankful for" />
                 </View>
                 }
 

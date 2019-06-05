@@ -1,96 +1,67 @@
 import React from 'react';
-import { StyleSheet, View, AsyncStorage, Text, Button } from 'react-native';
-import { SafeAreaView } from 'react-navigation'
+import { ScrollView, StyleSheet, View, Text, Button } from 'react-native';
 
 // https://docs.expo.io/versions/latest/guides/using-firebase/
 
 import * as Animatable from 'react-native-animatable';
-// import Button from 'react-native-button';
 
 // var Mixpanel = require('react-native-mixpanel');
 // Mixpanel = Mixpanel.default
 // Mixpanel.sharedInstanceWithToken('c72aabf24fb03673362eae05a8e5150a');
 
-import firebase from 'react-native-firebase';
 
-import { AccessToken, LoginManager } from 'react-native-fbsdk';
+export default class AuthScreen extends React.Component {
 
-class AuthScreen extends React.Component {
-
-  constructor(props) {
-    super(props);
-    this.state = { 
-        loading: false,
-        email: ''
-       };
-  }
-
-  componentDidMount() {
-      // Mixpanel.track("EmailScreen Loaded");
-      AsyncStorage.getItem('email').then((res) => {
-        email = res
-        this.setState({email: email})
-      })
-  }
-
+  static navigationOptions = {
+    title: 'Welcome to Positivity Trainer!'
+  };
 
 
   render() {
     return (
 
-
-      <Animatable.View animation="fadeIn" duration={1000}>
-        
-          <Text>Welcome to Positivity Trainer! </Text>
-          <Text>Sometimes, it feels like all we do is focus on the negative.</Text>
-          <Text>Yet so many good things are also happening in the world.</Text>
-          <Text>It's been proven that if we focus on the positive then we are happier.</Text>
-          
-          <Text>We ask you a question like this every day:</Text>
-          <Text>What thing made you smile today?</Text>
-          <Text>To do this, we'll need</Text>
-          <Text>Notifications (so we can remind you to pactice 1x/day)</Text>
-          <Text>Facebook (so you can acces your diary if it gets lost)</Text>
-        <View style={styles.border}>
-          <Button 
-            title="Next"
-            onPress={() => this.props.navigation.navigate('AuthScreen2')}
-            />
-        </View>
+      <Animatable.View 
+        animation="fadeIn" 
+        duration={1000} 
+        style={styles.container}>
+        <ScrollView style={{flex: 1}}>
+            <Text style={styles.text}>Sometimes, it feels like the news, our society, our times focus too much on the negative.</Text>
+            <Text style={styles.text}>Yet so many good things are also happening in the world.</Text>
+            <Text style={styles.text}>It's been proven that looking for the positive in life can make us find more of it and make us happier.</Text>
+            <Text style={styles.text}> </Text>
+            <Text style={styles.text}>This app will ask you a question like below every day, designed to help you remember the positive parts of your life and make you feel better about yourself:</Text>
+            <Text style={styles.text}> </Text>
+            <Animatable.Text 
+              animation="fadeIn" 
+              duration={1000} 
+              delay={1000}
+              style={styles.question}>
+                What thing made you smile today?
+            </Animatable.Text>
+            <Text style={styles.text}> </Text>
+            <Text style={styles.text}>To do this, we'll need Notifications and Facebook permissions (and we'll explain why on the next screen)</Text>
+            <Text style={styles.text}> </Text>
+          <View style={styles.border}>
+            <Button 
+              title="Next"
+              onPress={() => this.props.navigation.navigate('AuthScreen2')}
+              />
+          </View>
+        </ScrollView>
       </Animatable.View>
-
-
-
 
       );
   }
 }
 
-styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: '#fad168', 
+    padding: 20, 
+    flex: 1
   },
-  input:{
-        height: 40, 
-        backgroundColor:'white',
-        paddingLeft: 10,
-        padding: 4,
-        textAlign: 'center'
-      },
-  bottomButton:{
-        color: 'white',
-        padding: 15,
-        borderWidth: 0,
-        overflow:'hidden',
-        fontSize: 18,
-        fontWeight: '600',
-        height: 50, 
-  },
-  button:{
-    padding: 8, 
-    fontSize: 18, 
-    fontWeight: '400',
+  question: {
+    fontSize: 30
   },
   border:{
     borderRadius: 10, 
@@ -99,8 +70,9 @@ styles = StyleSheet.create({
     overflow: 'hidden', 
     margin: 5, 
     marginTop: 0
+  },
+  text: {
+    fontSize: 20,
+    textAlign: 'center'
   }
 })
-
-
-export default AuthScreen;

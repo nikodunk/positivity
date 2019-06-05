@@ -1,6 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, AsyncStorage, ActivityIndicator, KeyboardAvoidingView, Button } from 'react-native';
-import { SafeAreaView } from 'react-navigation'
+import { Text, StyleSheet, View, AsyncStorage, KeyboardAvoidingView, Button } from 'react-native';
 
 // https://docs.expo.io/versions/latest/guides/using-firebase/
 
@@ -16,6 +15,10 @@ import firebase from 'react-native-firebase';
 import { AccessToken, LoginManager } from 'react-native-fbsdk';
 
 class AuthScreen extends React.Component {
+
+  static navigationOptions = {
+    title: 'Enable Notifications'
+  };
 
   constructor(props) {
     super(props);
@@ -75,8 +78,10 @@ class AuthScreen extends React.Component {
   render() {
     return (
 
-    <KeyboardAvoidingView behavior="padding" enabled>
-      <Animatable.View animation="fadeIn" duration={1000}>
+
+      <Animatable.View animation="fadeIn" duration={1000} style={{backgroundColor: '#fad168', padding: 20, flex: 1}}>
+        <Text>Please press the button below and press "Allow" to give us permission to send you ONE notification per day – your daily reminder to practice your positivity mindset.</Text>
+        <Text> </Text>
         <View style={styles.border}>
           <Button
             onPress={() => this._firebaseNotifSetup()}
@@ -85,7 +90,7 @@ class AuthScreen extends React.Component {
         </View>
       </Animatable.View>
 
-    </KeyboardAvoidingView>
+
 
 
       );
