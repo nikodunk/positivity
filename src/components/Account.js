@@ -3,6 +3,7 @@ import { View, Button, Image, Text, StyleSheet, Alert } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 
 import firebase from 'react-native-firebase';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class SettingsScreen extends React.Component {
   static navigationOptions = {
@@ -25,7 +26,7 @@ export default class SettingsScreen extends React.Component {
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },
-        {text: 'Logout', onPress: () => firebase.auth().signOut()},
+        {text: 'Logout', onPress: () => this.props.logout()},
       ],
       {cancelable: false},
     ); 
@@ -39,7 +40,7 @@ export default class SettingsScreen extends React.Component {
     return (
       <View style={styles.accountBar} >
           <View style={{ flexDirection: 'row', justifyContent: 'flex-start'}}>
-            <Image source={{uri: this.props.user.photoURL }} style={styles.image} />
+            {this.props.user.photoURL ? <Image source={{uri: this.props.user.photoURL }} style={styles.image} /> : null }
             <Text style={styles.title}>My Positivity</Text>
           </View>
           <View style={{paddingTop: 5}}>

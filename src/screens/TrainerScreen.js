@@ -1,7 +1,7 @@
 import React from 'react';
-import { Button, ScrollView, StyleSheet, Text, TextInput, View, KeyboardAvoidingView, AsyncStorage, YellowBox, AppState, ActivityIndicator } from 'react-native';
-// import AsyncStorage from '@react-native-community/async-storage';
-YellowBox.ignoreWarnings(['Warning: Async', 'Remote debugger']);
+import { Button, ScrollView, StyleSheet, Text, TextInput, View, KeyboardAvoidingView, YellowBox, AppState, ActivityIndicator } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
+
 import * as Animatable from 'react-native-animatable';
 import Purchases from 'react-native-purchases';
 
@@ -29,7 +29,7 @@ const questions = [
 export default class TrainerScreen extends React.Component {
 
   static navigationOptions = {
-    headerTransparent: true
+    header: null,
   };
 
   constructor(props) {
@@ -41,13 +41,24 @@ export default class TrainerScreen extends React.Component {
         pastPositivity: [],
         saved: false,
         appState: AppState.currentState,
-        showPast: false
+        showPast: false,
+        trialsRemaining: null,
+        subscribed: null
        };
     var timeout = null;
   }
 
   componentWillMount(){
     this.getUserAndSetupData()
+    AsyncStorage.getItem('trialsRemaining').then(res => this.setState({trialsRemaining: JSON.parse(res) }))
+    // see if they're subscribed
+    Purchases.setDebugLogsEnabled(true);
+    Purchases.setup("hyjasKNFjgNBbqSGJkYPqnxymzypYArR", this.state.user.uid);
+    Purchases.addPurchaserInfoUpdateListener(res => {
+      if (res.activeSubscriptions[0] === "com.bigset.positivity.monthly"){
+        this.setState({subscribed: true})
+      }
+    });
   }
 
   componentDidMount(){
@@ -73,21 +84,27 @@ export default class TrainerScreen extends React.Component {
   getUserAndSetupData() {
     AsyncStorage.getItem('user')
       .then(user =>  {
-          userObject = JSON.parse(user)
-          this.setState({user: userObject })
-          // console.log(userObject.uid)
-          Purchases.setDebugLogsEnabled(true);
-          Purchases.setup("hyjasKNFjgNBbqSGJkYPqnxymzypYArR", userObject.uid);
-          Purchases.getEntitlements().then(entitlements => console.log(entitlements))
+        user = JSON.parse(user)
 
-          
-          
-          // GET THEIR DATA
-          firebase.database().ref('users/' + userObject.uid + '/').on('value', (snapshot) => {
-            
-            // MAKE THE STATES
+        // IF USER IS LOGGED IN WITH FACEBOOK
+        if(user != 'trial') {
+          this.setState({user: user })
+        
+          // GET THE USER DATA FROM FIREBASE
+          firebase.database().ref('users/' + user.uid + '/').on('value', (snapshot) => {
+            // MAKE THE STATES FROM IT
             this._makePositivityStates(snapshot.val())
           });
+
+        }
+
+        // IF USER IS NOT LOGGED IN WITH FACEBOOK AND IS ANONYMOUS
+        else {
+          this.setState({
+            todaysQuestion: this.getRandomQuestion(),
+            user: user
+          })
+        }
     })
   }
 
@@ -111,7 +128,8 @@ export default class TrainerScreen extends React.Component {
               console.log(enabled)
             } else {
               // user doesn't have permission
-              setTimeout(() => {firebase.messaging().requestPermission()
+              setTimeout(() => {
+                firebase.messaging().requestPermission()
                 .then(() => {
                   // User has authorised  
                 })
@@ -154,20 +172,26 @@ export default class TrainerScreen extends React.Component {
       }
     }
 
-    // if there's no active question even after checked the server (ie. today is still blank), create a question for today and save it to server.
+    // if today's question exists, save it immediately so view can update
+    this.setState({todaysQuestion: todaysQuestion})
+
+    // if there's no active question even after checking the server (ie. today is still blank), create a question for today and save it to server.
     if (todaysQuestion === ''){ 
       todaysQuestion = this.getRandomQuestion()
-      // save the qeustion to the server so that it doesn't change any more today
+
+      // save today's question immediately so view can update before saving it to server
+      this.setState({todaysQuestion: todaysQuestion})
+
+      // save the question to the server so that it doesn't change any more today
       firebase.database().ref('users/' + this.state.user.uid + '/' + today ).set({
         question: todaysQuestion
       });
     }
 
-    // save all to state
+    // save answers to state
     this.setState({
         pastPositivity: pastPositivity.reverse(),
-        todaysPositivity: todaysPositivity, 
-        todaysQuestion: todaysQuestion  
+        todaysPositivity: todaysPositivity
       })
 
   }
@@ -179,21 +203,28 @@ export default class TrainerScreen extends React.Component {
   }
 
   storePositivity() {
-    // console.log(user.uid, text)
-    let today = this._getToday()
+    console.log('trialsRemaining: ', this.state.trialsRemaining, ' subscribed: ', this.state.subscribed)
+    if(this.state.user === 'trial') {
+        this.props.navigation.navigate('AuthScreen3')
+    }
+    else if(this.state.trialsRemaining < 1 && this.state.subscribed !== true ) {
+      this.props.navigation.navigate('PurchaseScreen')
+    }
+    else {
+      let today = this._getToday()
+      this.setState({saving: true, saved: false})
 
-    this.setState({saving: true, saved: false})
-
-    firebase.database().ref('users/' + this.state.user.uid + '/' + today ).set({
-      positivity: this.state.todaysPositivity,
-      created: today,
-      question: this.state.todaysQuestion
-    });
-
-    this.setState({ saving: false, saved: true})
-    this.timeout = setTimeout(() => { this.setState({saved: false}) }, 1000)
-
-    
+      firebase.database().ref('users/' + this.state.user.uid + '/' + today ).set({
+        positivity: this.state.todaysPositivity,
+        created: today,
+        question: this.state.todaysQuestion
+      });
+      firebase.analytics().logEvent('Save_Pressed')
+      this.setState({ saving: false, saved: true})
+      this.timeout = setTimeout(() => { this.setState({saved: false}) }, 1000)
+      AsyncStorage.setItem('trialsRemaining', JSON.stringify(this.state.trialsRemaining - 1))
+      this.setState({trialsRemaining: this.state.trialsRemaining - 1 })
+    }
   }
 
   _getBackgroundColor(){
@@ -204,16 +235,30 @@ export default class TrainerScreen extends React.Component {
     return colors[randomNumber]
   }
 
+  pastToggle(){
+    if(this.state.user === 'trial'){
+      this.props.navigation.navigate('AuthScreen3')
+    } else {
+      this.setState({showPast: true})
+    }
+  }
+
+  logout(){
+    firebase.auth().signOut()
+    AsyncStorage.removeItem('user').then(() => this.props.navigation.navigate('AuthLoading'))
+  }
+
+
   render() {
 
     return (
       <View style={styles.container}>
         <KeyboardAvoidingView style={styles.container} behavior={"padding"} enabled>
           <ScrollView style={{flex: 1}} keyboardShouldPersistTaps={'handled'}>
-
-            <Animatable.View duration={1000} transition="opacity" style={{opacity: this.state.showPast ? 1 : 0 }}>
-              <Account user={this.state.user} visible={this.state.showPast} />
-            </Animatable.View>
+              
+              <Animatable.View duration={1000} transition="opacity" style={{opacity: this.state.showPast ? 1 : 0 }}>
+                <Account user={this.state.user} visible={this.state.showPast} logout={() => this.logout()} />
+              </Animatable.View> 
 
               <View style={{ backgroundColor: this.state.backgroundColor, padding: 30}} >
                 <Text style={styles.center}>👇 Today's question</Text>
@@ -273,7 +318,7 @@ export default class TrainerScreen extends React.Component {
                     : null }
                 </View> :
                 <View style={{marginTop: 30}}>
-                  <Button onPress={() => this.setState({showPast: true})} title="See everything you've been thankful for" />
+                  <Button onPress={() => this.pastToggle()} title="See everything you've been thankful for" />
                 </View>
                 }
 
@@ -288,7 +333,8 @@ export default class TrainerScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: '#fad168'
   },
   element:{
     margin: 20

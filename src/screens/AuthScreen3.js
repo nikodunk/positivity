@@ -1,6 +1,6 @@
 import React from 'react';
-import { Text, StyleSheet, View, AsyncStorage, KeyboardAvoidingView, Button } from 'react-native';
-
+import { Text, View, StyleSheet, ActivityIndicator, Button } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 // https://docs.expo.io/versions/latest/guides/using-firebase/
 
@@ -30,42 +30,59 @@ class AuthScreen extends React.Component {
   }
 
   componentDidMount() {
-      // Mixpanel.track("EmailScreen Loaded");
       AsyncStorage.getItem('email').then((res) => {
         email = res
         this.setState({email: email})
       })
   }
 
-  async facebookLogin() {
+  async facebookLogin(anonymous) {
+    this.setState({loading: true})
 
-    try {
-      const result = await LoginManager.logInWithReadPermissions(['public_profile', 'email']);
-  
-      if (result.isCancelled) {
-        // handle this however suites the flow of your app
-        throw new Error('User cancelled request'); 
+    // IF FACEBOOK LOGIN
+    if (anonymous === false) {
+      try {
+        const result = await LoginManager.logInWithReadPermissions(['public_profile', 'email']);
+    
+        if (result.isCancelled) {
+          this.setState({loading: false})
+          // handle this however suites the flow of your app
+          // throw new Error('User cancelled request'); 
+          return
+        }
+    
+        // console.log(`Login success with permissions: ${result.grantedPermissions.toString()}`);
+    
+        // get the access token
+        const data = await AccessToken.getCurrentAccessToken();
+    
+        if (!data) {
+          // handle this however suites the flow of your app
+          this.setState({loading: false})
+          throw new Error('Something went wrong obtaining the users access token');
+        }
+    
+        // create a new firebase credential with the token
+        const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
+
+        firebase.analytics().logEvent('Facebook_Logged_In')
+
+        // login with credential
+        firebase.auth().signInWithCredential(credential).then(res => {
+          AsyncStorage.setItem('trialsRemaining', JSON.stringify(5))
+          AsyncStorage.setItem('user', JSON.stringify(res.user)).then(() => {
+            this.props.navigation.navigate('AuthLoading')
+          })
+        })
+    
+      } catch (e) {
+        console.error(e);
       }
-  
-      console.log(`Login success with permissions: ${result.grantedPermissions.toString()}`);
-  
-      // get the access token
-      const data = await AccessToken.getCurrentAccessToken();
-  
-      if (!data) {
-        // handle this however suites the flow of your app
-        throw new Error('Something went wrong obtaining the users access token');
-      }
-  
-      // create a new firebase credential with the token
-      const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
-  
-      // login with credential
-      const firebaseUserCredential = await firebase.auth().signInWithCredential(credential);
-  
-      console.warn(JSON.stringify(firebaseUserCredential.user.toJSON()))
-    } catch (e) {
-      console.error(e);
+    }
+    // IF ANONYMOUS LOGIN FOR NOW
+    else {
+      AsyncStorage.setItem('user', JSON.stringify('trial'))
+      this.props.navigation.navigate('TrainerScreen')
     }
   }
 
@@ -75,14 +92,22 @@ class AuthScreen extends React.Component {
 
 
       <Animatable.View animation="fadeIn" duration={1000} style={{backgroundColor: '#fad168', padding: 20, flex: 1}}>
-        <Text>Finally, please sign up with Facebook so you can save your answers (nothing will be shared) and we can re-access your data if you lose your phone. We won't share your information or email you.</Text>
-        <Text> </Text>
-        <View style={styles.border}>
-          <Button
-            onPress={() => this.facebookLogin()}
-            title="Login with Facebook"
-            />
+        {!this.state.loading ? 
+        <View>
+          <Text>Finally, please sign up with Facebook so you can save your answers (nothing will be shared) and we can re-access your data if you lose your phone. We won't share your information or email you.</Text>
+          <Text> </Text>
+          <View style={styles.border}>
+            <Button
+              onPress={() => this.facebookLogin(false)}
+              title="Login with Facebook"
+              />
+          </View>
+          <Button 
+              title="Skip for now"
+              onPress={() => this.facebookLogin(true)}
+                />
         </View>
+        : <ActivityIndicator /> }
       </Animatable.View>
 
 
@@ -95,7 +120,7 @@ class AuthScreen extends React.Component {
 styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: '#fad168'
   },
   input:{
         height: 40, 

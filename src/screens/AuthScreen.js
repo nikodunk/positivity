@@ -36,7 +36,7 @@ export default class AuthScreen extends React.Component {
               duration={1000} 
               delay={1000}
               style={styles.question}>
-                What thing made you smile today?
+                What made you smile today?
             </Animatable.Text>
             <Text style={styles.text}> </Text>
             <Text style={styles.text}>To do this, we'll need Notifications and Facebook permissions (and we'll explain why on the next screen)</Text>

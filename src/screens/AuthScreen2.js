@@ -1,5 +1,6 @@
 import React from 'react';
-import { Text, StyleSheet, View, AsyncStorage, KeyboardAvoidingView, Button } from 'react-native';
+import { Text, StyleSheet, View, KeyboardAvoidingView, Button } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 // https://docs.expo.io/versions/latest/guides/using-firebase/
 
@@ -78,20 +79,16 @@ class AuthScreen extends React.Component {
   render() {
     return (
 
-
       <Animatable.View animation="fadeIn" duration={1000} style={{backgroundColor: '#fad168', padding: 20, flex: 1}}>
         <Text>Please press the button below and press "Allow" to give us permission to send you ONE notification per day – your daily reminder to practice your positivity mindset.</Text>
         <Text> </Text>
         <View style={styles.border}>
           <Button
             onPress={() => this._firebaseNotifSetup()}
-            title="Allow a daily reminder"
+            title="Allow reminder once a day"
             />
         </View>
       </Animatable.View>
-
-
-
 
       );
   }

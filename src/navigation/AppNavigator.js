@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, ActivityIndicator, AsyncStorage } from 'react-native'
+import { View, ActivityIndicator } from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 
-import AuthSwitch from './AuthNavigator'
-import TrainerScreen from '../screens/TrainerScreen';
+import AuthStack from './AuthNavigator'
+import MainStack from './MainNavigator'
 
 
 import firebase from 'react-native-firebase';
@@ -17,11 +18,16 @@ class AuthLoadingScreen extends React.Component {
   // Fetch the token from storage then navigate to our appropriate place
   _bootstrapAsync = async () => {
     // Listen for authentication state to change.
-    firebase.auth().onAuthStateChanged((user) => {
-      user != null ? AsyncStorage.setItem('user', JSON.stringify(user)) : null
-      this.props.navigation.navigate(user != null ? 'Main' : 'Auth' );
-    });
     
+    // DEV MODE ONLY
+    // firebase.auth().signOut()
+    // AsyncStorage.removeItem('user')
+    // AsyncStorage.removeItem('trialsRemaining')
+    
+    AsyncStorage.getItem('user').then(res => {
+      this.props.navigation.navigate(JSON.parse(res) != null ? 'Main' : 'Auth' )
+    })
+
   };
 
   // Render any loading content that you like here
@@ -38,9 +44,9 @@ class AuthLoadingScreen extends React.Component {
 export default createAppContainer(createSwitchNavigator({
   // You could add another route here for authentication.
   // Read more at https://reactnavigation.org/docs/en/auth-flow.html
-  Main: TrainerScreen,
+  Main: MainStack,
   AuthLoading: AuthLoadingScreen,
-  Auth: AuthSwitch
+  Auth: AuthStack
   },
   {
     initialRouteName: 'AuthLoading',
