@@ -25,28 +25,30 @@ export default class AuthScreen extends React.Component {
         duration={1000} 
         style={styles.container}>
         <ScrollView style={{flex: 1}}>
-            <Text style={styles.text}>Sometimes, it feels like the news, our society, our times focus too much on the negative.</Text>
-            <Text style={styles.text}>Yet so many good things are also happening in the world.</Text>
-            <Text style={styles.text}>It's been proven that looking for the positive in life can make us find more of it and make us happier.</Text>
             <Text style={styles.text}> </Text>
-            <Text style={styles.text}>This app will ask you a question like below every day, designed to help you remember the positive parts of your life and make you feel better about yourself:</Text>
+            <Text style={styles.text}>This app asks you a different question every day, designed to focus on the positive in life!</Text>
             <Text style={styles.text}> </Text>
             <Animatable.Text 
               animation="fadeIn" 
               duration={1000} 
-              delay={1000}
+              delay={2000}
               style={styles.question}>
                 What made you smile today?
             </Animatable.Text>
             <Text style={styles.text}> </Text>
-            <Text style={styles.text}>To do this, we'll need Notifications and Facebook permissions (and we'll explain why on the next screen)</Text>
-            <Text style={styles.text}> </Text>
-          <View style={styles.border}>
-            <Button 
-              title="Next"
-              onPress={() => this.props.navigation.navigate('AuthScreen2')}
-              />
-          </View>
+            <Animatable.View
+              animation="fadeIn" 
+              duration={1000} 
+              delay={3000}>
+              <Text style={styles.text}>Is a good example. To do this, we'll need Notifications and Facebook permissions (and we'll explain why on the next screen)</Text>
+              <Text style={styles.text}> </Text>
+              <View style={styles.border}>
+                <Button 
+                  title="Next"
+                  onPress={() => this.props.navigation.navigate('AuthScreen2')}
+                  />
+              </View>
+            </Animatable.View>
         </ScrollView>
       </Animatable.View>
 
@@ -61,7 +63,8 @@ const styles = StyleSheet.create({
     flex: 1
   },
   question: {
-    fontSize: 30
+    fontSize: 30,
+    fontWeight: '600'
   },
   border:{
     borderRadius: 10, 

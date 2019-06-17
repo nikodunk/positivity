@@ -69,7 +69,7 @@ class AuthScreen extends React.Component {
 
         // login with credential
         firebase.auth().signInWithCredential(credential).then(res => {
-          AsyncStorage.setItem('trialsRemaining', JSON.stringify(5))
+          AsyncStorage.setItem('trialsRemaining', JSON.stringify(4))
           AsyncStorage.setItem('user', JSON.stringify(res.user)).then(() => {
             this.props.navigation.navigate('AuthLoading')
           })
@@ -94,7 +94,7 @@ class AuthScreen extends React.Component {
       <Animatable.View animation="fadeIn" duration={1000} style={{backgroundColor: '#fad168', padding: 20, flex: 1}}>
         {!this.state.loading ? 
         <View>
-          <Text>Finally, please sign up with Facebook so you can save your answers (nothing will be shared) and we can re-access your data if you lose your phone. We won't share your information or email you.</Text>
+          <Text style={{fontSize: 20,textAlign: 'center'}}>Finally, please sign up with Facebook so you can save your answers (nothing will be shared) and we can re-access your data if you lose your phone. We won't share your information or email you.</Text>
           <Text> </Text>
           <View style={styles.border}>
             <Button

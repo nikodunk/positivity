@@ -26,6 +26,8 @@ const questions = [
   'What are you thankful for in a partner or a friend? Have you told them?'
 ]
 
+const emojiArray = ['🙂', '😁', '😃', '😀','😄']
+
 export default class TrainerScreen extends React.Component {
 
   static navigationOptions = {
@@ -239,13 +241,18 @@ export default class TrainerScreen extends React.Component {
     if(this.state.user === 'trial'){
       this.props.navigation.navigate('AuthScreen3')
     } else {
-      this.setState({showPast: true})
+      this.setState({showPast: !this.state.showPast})
     }
   }
 
   logout(){
     firebase.auth().signOut()
     AsyncStorage.removeItem('user').then(() => this.props.navigation.navigate('AuthLoading'))
+  }
+
+  getRandomEmoji(){
+    randomNumber = Math.floor(Math.random() * 5)
+    return emojiArray[randomNumber]
   }
 
 
@@ -261,16 +268,17 @@ export default class TrainerScreen extends React.Component {
               </Animatable.View> 
 
               <View style={{ backgroundColor: this.state.backgroundColor, padding: 30}} >
-                <Text style={styles.center}>👇 Today's question</Text>
-                <Text style={styles.question}>
+                <Animatable.Text animation="bounceIn" easing="ease-out" style={styles.center}>
+                  👇 Today's question
+                </Animatable.Text>
+                <Animatable.Text animation="bounceIn" easing="ease-out" style={styles.question}>
                   {this.state.todaysQuestion}
-                </Text>
+                </Animatable.Text>
                 <Text></Text>
                 
                 <Animatable.View
-                  animation="fadeIn"
-                  delay={3000} 
-                  duration={1000}>
+                  animation="bounceIn"
+                  delay={3000}>
                   <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                     <Text>🙂 Your answer – tap below to type.</Text>
                     {this.state.saved ? <Text style={{}}>Saved ✅</Text> : <Text> </Text> }
@@ -296,6 +304,9 @@ export default class TrainerScreen extends React.Component {
                 
                 {this.state.showPast ? 
                 <View>
+                  <View style={{marginTop: 30}}>
+                    <Button onPress={() => this.pastToggle()} title="Hide Past Positivities" />
+                  </View>
                   <Text style={{paddingTop: 30, padding: 10}}>
                     Past positivities
                   </Text>
@@ -304,11 +315,11 @@ export default class TrainerScreen extends React.Component {
                       this.state.pastPositivity.map((item, key) => 
                       <Animatable.View
                         animation="slideInLeft" 
-                        duration={1000-(key*300)}
+                        duration={1000-(key*600)}
                         style={{ backgroundColor: this._getBackgroundColor(), padding: 30, borderBottomWidth: 1, borderBottomColor: 'grey' }} key={key}
                         >
-                          <Text style={{}}>
-                            {item.question}
+                          <Text>
+                            {this.getRandomEmoji()} {item.question}
                           </Text>
                           <Text style={styles.question}>
                             {item.positivity}
@@ -318,7 +329,7 @@ export default class TrainerScreen extends React.Component {
                     : null }
                 </View> :
                 <View style={{marginTop: 30}}>
-                  <Button onPress={() => this.pastToggle()} title="See everything you've been thankful for" />
+                  <Button onPress={() => this.pastToggle()} title="Show Past Positivities" />
                 </View>
                 }
 
@@ -351,7 +362,8 @@ const styles = StyleSheet.create({
     borderColor: 'lightgrey'
   },
   question: {
-    fontSize: 30
+    fontSize: 30,
+    fontWeight: '600'
   },
   positivity: {
     width: '100%',

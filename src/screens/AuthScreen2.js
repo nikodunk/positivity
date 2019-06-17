@@ -80,12 +80,12 @@ class AuthScreen extends React.Component {
     return (
 
       <Animatable.View animation="fadeIn" duration={1000} style={{backgroundColor: '#fad168', padding: 20, flex: 1}}>
-        <Text>Please press the button below and press "Allow" to give us permission to send you ONE notification per day – your daily reminder to practice your positivity mindset.</Text>
+        <Text style={{fontSize: 20,textAlign: 'center'}}>Please allow push notifications so we can send you a daily reminder.</Text>
         <Text> </Text>
         <View style={styles.border}>
           <Button
             onPress={() => this._firebaseNotifSetup()}
-            title="Allow reminder once a day"
+            title="Allow daily reminder"
             />
         </View>
       </Animatable.View>
@@ -127,6 +127,10 @@ styles = StyleSheet.create({
     overflow: 'hidden', 
     margin: 5, 
     marginTop: 0
+  },
+  text: {
+    fontSize: 20,
+    textAlign: 'center'
   }
 })
 
