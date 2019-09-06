@@ -63,8 +63,8 @@ class AuthScreen extends React.Component {
       <Animatable.View animation="fadeIn" duration={1000} style={{backgroundColor: '#fad168', padding: 20, flex: 1}}>
         {!this.state.loading ? 
         <View style={{flex: 1}}>
-          <Text style={{fontSize: 30, fontWeight: '600', textAlign: 'center'}}>Feeling more positive already?</Text>
-          <Text style={{fontSize: 20, textAlign: 'center'}}>Continue building positivity for $1.49/month – less than a ☕️. Try a 3-day free trial, then $1.49/month after that. Cancel any time. </Text>
+          <Text style={{fontSize: 30, fontWeight: '600', textAlign: 'center'}}>Train your mind to be more positive.</Text>
+          <Text style={{fontSize: 20, textAlign: 'center'}}>Start 3-day free trial. $1.49/month after that. Cancel any time. </Text>
           {/* <Text style={{fontSize: 15}}>We know... it's rough, but it costs money to keep software up to date and online. But look on the bright side – it doesn't cost you much at all to spread positivity if everyone chips in! 🍀 Thank you!</Text> */}
           <Text> </Text>
           <ScrollView style={{ borderWidth: 1, borderColor: 'grey', padding: 5, borderRadius: 10}}>
@@ -88,7 +88,7 @@ class AuthScreen extends React.Component {
 
           <TouchableOpacity style={styles.button} onPress={() => this.purchasePositivity()}>
             <Text style={styles.bottomButton}>
-              Start 3-Day Free Trial, then $1.49/month
+              Start free trial, then $1.49/month
             </Text>
           </TouchableOpacity>
 
