@@ -15,14 +15,7 @@ class AuthLoadingScreen extends React.Component {
     this._bootstrapAsync();
   }
 
-  // Fetch the token from storage then navigate to our appropriate place
-  _bootstrapAsync = async () => {
-    // Listen for authentication state to change.
-    
-    // DEV MODE ONLY
-    // firebase.auth().signOut()
-    // AsyncStorage.removeItem('user')
-    // AsyncStorage.removeItem('trialsRemaining')
+  _bootstrapAsync = async () => {    
     
     AsyncStorage.getItem('user').then(res => {
       this.props.navigation.navigate(JSON.parse(res) != null ? 'Main' : 'Auth' )

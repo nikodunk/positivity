@@ -40,7 +40,7 @@ export default class AuthScreen extends React.Component {
               animation="fadeIn" 
               duration={1000} 
               delay={3000}>
-              <Text style={styles.text}>Is a good example. To do this, we'll need Notifications and Facebook permissions (and we'll explain why on the next screen)</Text>
+              <Text style={styles.text}>Is a good example. To do this, we'll send you a reminder 1x per day. To allow this, please accept notifications.</Text>
               <Text style={styles.text}> </Text>
               <View style={styles.border}>
                 <Button 
