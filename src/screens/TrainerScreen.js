@@ -53,14 +53,6 @@ export default class TrainerScreen extends React.Component {
   componentWillMount(){
     this.getUserAndSetupData()
     AsyncStorage.getItem('trialsRemaining').then(res => this.setState({trialsRemaining: JSON.parse(res) }))
-    // see if they're subscribed
-    Purchases.setDebugLogsEnabled(true);
-    Purchases.setup("hyjasKNFjgNBbqSGJkYPqnxymzypYArR", this.state.user.uid);
-    Purchases.addPurchaserInfoUpdateListener(res => {
-      if (res.activeSubscriptions[0] === "com.bigset.positivity.monthly"){
-        this.setState({subscribed: true})
-      }
-    });
   }
 
   componentDidMount(){
@@ -88,25 +80,13 @@ export default class TrainerScreen extends React.Component {
       .then(user =>  {
         user = JSON.parse(user)
 
-        // IF USER IS LOGGED IN WITH FACEBOOK
-        if(user != 'trial') {
-          this.setState({user: user })
+        this.setState({
+          todaysQuestion: this.getRandomQuestion(),
+          user: user
+        })
         
-          // GET THE USER DATA FROM FIREBASE
-          firebase.database().ref('users/' + user.uid + '/').on('value', (snapshot) => {
-            // MAKE THE STATES FROM IT
-            this._makePositivityStates(snapshot.val())
-          });
+        this._makePositivityStates(snapshot.val())
 
-        }
-
-        // IF USER IS NOT LOGGED IN WITH FACEBOOK AND IS ANONYMOUS
-        else {
-          this.setState({
-            todaysQuestion: this.getRandomQuestion(),
-            user: user
-          })
-        }
     })
   }
 
@@ -243,11 +223,6 @@ export default class TrainerScreen extends React.Component {
     } else {
       this.setState({showPast: !this.state.showPast})
     }
-  }
-
-  logout(){
-    firebase.auth().signOut()
-    AsyncStorage.removeItem('user').then(() => this.props.navigation.navigate('AuthLoading'))
   }
 
   getRandomEmoji(){

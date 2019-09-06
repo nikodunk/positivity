@@ -55,24 +55,26 @@ class AuthScreen extends React.Component {
         if (enabled) {
           // user has permissions
           console.log(enabled)
-          this.props.navigation.navigate("AuthScreen3")
+          this.props.navigation.navigate("AuthLoading")
         } else {
           // user doesn't have permission
           firebase.messaging().requestPermission()
             .then(() => {
               // User has authorised  
-              this.props.navigation.navigate("AuthScreen3")
+              AsyncStorage.setItem('user', JSON.stringify(res.user)).then(() => {
+                this.props.navigation.navigate('AuthLoading')
+              })
             })
             .catch(error => {
-              // User has rejected permissions
-              this.props.navigation.navigate("AuthScreen3")
+              AsyncStorage.setItem('user', JSON.stringify(res.user)).then(() => {
+                this.props.navigation.navigate('AuthLoading')
+              })
             })
         } 
       });
 
     //if there are any unread badgets, remove them.
     firebase.notifications().setBadge(0)
-
   }
 
 
