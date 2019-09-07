@@ -55,18 +55,20 @@ class AuthScreen extends React.Component {
         if (enabled) {
           // user has permissions
           console.log(enabled)
-          this.props.navigation.navigate("AuthLoading")
+          AsyncStorage.setItem('user', JSON.stringify('set')).then(() => {
+            this.props.navigation.navigate('AuthLoading')
+          })
         } else {
           // user doesn't have permission
           firebase.messaging().requestPermission()
-            .then(() => {
+            .then(success => {
               // User has authorised  
-              AsyncStorage.setItem('user', JSON.stringify(res.user)).then(() => {
+              AsyncStorage.setItem('user', JSON.stringify('set')).then(() => {
                 this.props.navigation.navigate('AuthLoading')
               })
             })
             .catch(error => {
-              AsyncStorage.setItem('user', JSON.stringify(res.user)).then(() => {
+              AsyncStorage.setItem('user', JSON.stringify('set')).then(() => {
                 this.props.navigation.navigate('AuthLoading')
               })
             })

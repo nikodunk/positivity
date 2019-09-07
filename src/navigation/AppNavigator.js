@@ -7,8 +7,6 @@ import AuthStack from './AuthNavigator'
 import MainStack from './MainNavigator'
 
 
-import firebase from 'react-native-firebase';
-
 class AuthLoadingScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -18,7 +16,7 @@ class AuthLoadingScreen extends React.Component {
   _bootstrapAsync = async () => {    
     
     AsyncStorage.getItem('user').then(res => {
-      this.props.navigation.navigate(JSON.parse(res) != null ? 'Main' : 'Auth' )
+      this.props.navigation.navigate(JSON.parse(res) === 'set' ? 'Main' : 'Auth' )
     })
 
   };

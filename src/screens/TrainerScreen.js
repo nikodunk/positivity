@@ -1,13 +1,8 @@
 import React from 'react';
 import { Button, ScrollView, StyleSheet, Text, TextInput, View, KeyboardAvoidingView, YellowBox, AppState, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-
 import * as Animatable from 'react-native-animatable';
-import Purchases from 'react-native-purchases';
-
-
 import Account from '../components/Account'
-
 import firebase from 'react-native-firebase';
 
 // this is the library of questions. add freely to them – how many there are doesn't matter!
@@ -52,87 +47,34 @@ export default class TrainerScreen extends React.Component {
 
   componentWillMount(){
     this.getUserAndSetupData()
-    AsyncStorage.getItem('trialsRemaining').then(res => this.setState({trialsRemaining: JSON.parse(res) }))
-  }
-
-  componentDidMount(){
     firebase.analytics().logEvent('PositivityScreen_Loaded')
-    AppState.addEventListener('change', this._handleAppStateChange);
     this._firebaseNotifSetup()
+    AppState.addEventListener('change', this._handleAppStateChange);
   }
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this._handleAppStateChange);
   }
-
+  
   _handleAppStateChange = (nextAppState) => {
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
       this.getUserAndSetupData()
-      //if there are any unread badgets, remove them.
+      //if there are any unread badges, remove them.
       firebase.notifications().setBadge(0)
       this.setState({showPast: false})
     }
     this.setState({appState: nextAppState});
   }
-
+  
   getUserAndSetupData() {
-    AsyncStorage.getItem('user')
-      .then(user =>  {
-        user = JSON.parse(user)
-
-        this.setState({
-          todaysQuestion: this.getRandomQuestion(),
-          user: user
-        })
-        
-        this._makePositivityStates(snapshot.val())
-
+    this.setState({
+      todaysQuestion: this.getRandomQuestion()
+    })
+    AsyncStorage.getItem('saves').then(res => {
+      this._makePositivityStates(JSON.parse(res))
     })
   }
-
-  _firebaseNotifSetup(){
-
-        firebase.messaging().getToken()
-        .then(fcmToken => {
-          if (fcmToken) {
-            // user has a device token
-            console.log('this is my FBCM token '+fcmToken)
-            // this.props.putToken(this.state.phoneNo, fcmToken)
-          } else {
-            // user doesn't have a device token yet
-          } 
-        });
-    
-        firebase.messaging().hasPermission()
-          .then(enabled => {
-            if (enabled) {
-              // user has permissions
-              console.log(enabled)
-            } else {
-              // user doesn't have permission
-              setTimeout(() => {
-                firebase.messaging().requestPermission()
-                .then(() => {
-                  // User has authorised  
-                })
-                .catch(error => {
-                  // User has rejected permissions  
-                })}, 3000)
-            } 
-          });
-    
-        //if there are any unread badgets, remove them.
-        firebase.notifications().setBadge(0)
-  }
-
-  _getToday(){
-    // make date in format 2019-05-31
-    let d = new Date();
-    let today = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
-    return today
-  }
-
-
+  
   _makePositivityStates(data){
     let pastPositivity = []
     let todaysPositivity = ''
@@ -178,12 +120,6 @@ export default class TrainerScreen extends React.Component {
 
   }
 
-  getRandomQuestion(){
-    //make a random number between one and the length of the items in the question array
-    randomNumber = Math.floor(Math.random() * questions.length)
-    return questions[randomNumber]
-  }
-
   storePositivity() {
     console.log('trialsRemaining: ', this.state.trialsRemaining, ' subscribed: ', this.state.subscribed)
     if(this.state.user === 'trial') {
@@ -208,28 +144,6 @@ export default class TrainerScreen extends React.Component {
       this.setState({trialsRemaining: this.state.trialsRemaining - 1 })
     }
   }
-
-  _getBackgroundColor(){
-    const colors = [
-      '#abcdef', '#bedcaf', '#cafedb', '#decafb'
-    ]
-    const randomNumber = Math.floor(Math.random() * colors.length)
-    return colors[randomNumber]
-  }
-
-  pastToggle(){
-    if(this.state.user === 'trial'){
-      this.props.navigation.navigate('AuthScreen3')
-    } else {
-      this.setState({showPast: !this.state.showPast})
-    }
-  }
-
-  getRandomEmoji(){
-    randomNumber = Math.floor(Math.random() * 5)
-    return emojiArray[randomNumber]
-  }
-
 
   render() {
 
@@ -315,6 +229,76 @@ export default class TrainerScreen extends React.Component {
     </View>
     );
   }
+
+  _getToday(){
+    // make date in format 2019-05-31
+    let d = new Date();
+    let today = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
+    return today
+  }
+
+  getRandomQuestion(){
+    //make a random number between one and the length of the items in the question array
+    randomNumber = Math.floor(Math.random() * questions.length)
+    return questions[randomNumber]
+  }
+
+  _getBackgroundColor(){
+    const colors = [
+      '#abcdef', '#bedcaf', '#cafedb', '#decafb'
+    ]
+    const randomNumber = Math.floor(Math.random() * colors.length)
+    return colors[randomNumber]
+  }
+
+  pastToggle(){
+    if(this.state.user === 'trial'){
+      this.props.navigation.navigate('AuthScreen3')
+    } else {
+      this.setState({showPast: !this.state.showPast})
+    }
+  }
+
+  getRandomEmoji(){
+    randomNumber = Math.floor(Math.random() * 5)
+    return emojiArray[randomNumber]
+  }
+
+  _firebaseNotifSetup(){
+
+    firebase.messaging().getToken()
+    .then(fcmToken => {
+      if (fcmToken) {
+        // user has a device token
+        console.log('this is my FBCM token '+fcmToken)
+        // this.props.putToken(this.state.phoneNo, fcmToken)
+      } else {
+        // user doesn't have a device token yet
+      } 
+    });
+
+    firebase.messaging().hasPermission()
+      .then(enabled => {
+        if (enabled) {
+          // user has permissions
+          console.log(enabled)
+        } else {
+          // user doesn't have permission
+          setTimeout(() => {
+            firebase.messaging().requestPermission()
+            .then(() => {
+              // User has authorised  
+            })
+            .catch(error => {
+              // User has rejected permissions  
+            })}, 3000)
+        } 
+      });
+
+    //if there are any unread badgets, remove them.
+    firebase.notifications().setBadge(0)
+  }
+
 }
 
 const styles = StyleSheet.create({
