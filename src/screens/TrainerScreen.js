@@ -53,40 +53,36 @@ export default class TrainerScreen extends React.Component {
     let todaysPositivity = ''
     let pastPositivity = []
     let today = this._getToday()
-
+    
     AsyncStorage.getItem('data').then(res => {
-      let data = JSON.parse(res)
-      console.log(Object.entries(data))
-      for (let [key, object] of Object.entries(data)){
-        console.log(key, object)
-        if (key === today) {
-          // if the item is today's positivity – push it to string
-          todaysPositivity = object.positivity
-          todaysQuestion = object.question
-        } else {
-          // else push it to past positivities array
-          pastPositivity.push({
-            positivity: object.positivity,
-            created: object.created,
-            question: object.question
-          })
+      if (res){
+        let data = JSON.parse(res)
+        for (let [key, object] of Object.entries(data)){
+          console.log(key, object)
+          if (key === today) { // if the item is today's positivity – push it to string
+            todaysPositivity = object.positivity
+            todaysQuestion = object.question
+          } else { // else push it to past positivities array
+            pastPositivity.push({
+              positivity: object.positivity,
+              created: object.created,
+              question: object.question
+            })
+          }
         }
+        this.setState({data: data})
       }
-
-      if (todaysQuestion === ''){ 
-        todaysQuestion = this.getRandomQuestion()
-      } 
-      this.setState({
-        todaysQuestion: todaysQuestion,
-        pastPositivity: pastPositivity.reverse(),
-        todaysPositivity: todaysPositivity
-      })
-      this.setState({data: data})
+        todaysQuestion ? null : todaysQuestion = this.getRandomQuestion()
+        this.setState({
+          todaysQuestion: todaysQuestion,
+          pastPositivity: pastPositivity.reverse(),
+          todaysPositivity: todaysPositivity
+        })
+      this.storePositivity()
     })
   }
 
   storePositivity() {
-    firebase.analytics().logEvent('Save_Pressed')
     let today = this._getToday()
     let data = this.state.data
     data[today] = {
@@ -101,8 +97,8 @@ export default class TrainerScreen extends React.Component {
 
   _getToday(){
     let d = new Date();
-    // let today = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate() // make date in format 2019-05-31
-    let today = '2019-09-16'
+    let today = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate() // make date in format 2019-05-31
+    // let today = '2019-09-17'
     return today
   }
 
@@ -141,7 +137,7 @@ export default class TrainerScreen extends React.Component {
                     style={ styles.textInput }
                     />
                   <Button
-                    onPress={() => this.storePositivity()}
+                    onPress={() => {this.storePositivity(); firebase.analytics().logEvent('Save_Pressed')}}
                     title="Save" />
                 </Animatable.View>
                 <View>
