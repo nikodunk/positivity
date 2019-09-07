@@ -16,38 +16,14 @@ export default class SettingsScreen extends React.Component {
        };
   }
 
-  logout(){
-    Alert.alert(
-      'Are you sure you want to log out?',
-      'All your positivities are saved',
-      [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {text: 'Logout', onPress: () => this.props.logout()},
-      ],
-      {cancelable: false},
-    ); 
-  }
-
-  componentWillMount(){
-    
-  }
 
   render() {
     return (
       <View style={styles.accountBar} >
           <View style={{ flexDirection: 'row', justifyContent: 'flex-start'}}>
-            {this.props.user.photoURL ? <Image source={{uri: this.props.user.photoURL }} style={styles.image} /> : null }
-            <Text style={styles.title}>My Positivity</Text>
+            <Text style={styles.title}></Text>
           </View>
           <View style={{paddingTop: 5}}>
-            <Button
-              title="Logout"
-              onPress={() => this.logout()}
-            />
           </View>
       </View>
     )

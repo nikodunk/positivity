@@ -21,7 +21,7 @@ const questions = [
   'What are you thankful for in a partner or a friend? Have you told them?'
 ]
 
-const emojiArray = ['🙂', '😁', '😃', '😀','😄']
+const emojiArray = ['🙂', '😁', '😃', '😀','😄', '👍']
 
 export default class TrainerScreen extends React.Component {
 
@@ -32,117 +32,78 @@ export default class TrainerScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
-        user: {},
         todaysPositivity: '',
         todaysQuestion: '',
         pastPositivity: [],
+        data: {},
         saved: false,
         appState: AppState.currentState,
         showPast: false,
-        trialsRemaining: null,
-        subscribed: null
        };
-    var timeout = null;
   }
 
   componentWillMount(){
-    this.getUserAndSetupData()
+    this.getPositivity()
     firebase.analytics().logEvent('PositivityScreen_Loaded')
     this._firebaseNotifSetup()
-    AppState.addEventListener('change', this._handleAppStateChange);
-  }
-
-  componentWillUnmount() {
-    AppState.removeEventListener('change', this._handleAppStateChange);
   }
   
-  _handleAppStateChange = (nextAppState) => {
-    if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-      this.getUserAndSetupData()
-      //if there are any unread badges, remove them.
-      firebase.notifications().setBadge(0)
-      this.setState({showPast: false})
-    }
-    this.setState({appState: nextAppState});
-  }
-  
-  getUserAndSetupData() {
-    this.setState({
-      todaysQuestion: this.getRandomQuestion()
-    })
-    AsyncStorage.getItem('saves').then(res => {
-      this._makePositivityStates(JSON.parse(res))
-    })
-  }
-  
-  _makePositivityStates(data){
-    let pastPositivity = []
-    let todaysPositivity = ''
+  getPositivity(){
     let todaysQuestion = ''
+    let todaysPositivity = ''
+    let pastPositivity = []
     let today = this._getToday()
 
-    for (var key in data){
-      if (key === today) {
-        // if the item is today's positivity – push it to string
-        todaysPositivity = data[key].positivity
-        todaysQuestion = data[key].question
-      } else {
-        // else push it to past positivities array
-        pastPositivity.push({
-          positivity: data[key].positivity,
-          created: data[key].created,
-          question: data[key].question
-        }) 
+    AsyncStorage.getItem('data').then(res => {
+      let data = JSON.parse(res)
+      console.log(Object.entries(data))
+      for (let [key, object] of Object.entries(data)){
+        console.log(key, object)
+        if (key === today) {
+          // if the item is today's positivity – push it to string
+          todaysPositivity = object.positivity
+          todaysQuestion = object.question
+        } else {
+          // else push it to past positivities array
+          pastPositivity.push({
+            positivity: object.positivity,
+            created: object.created,
+            question: object.question
+          })
+        }
       }
-    }
 
-    // if today's question exists, save it immediately so view can update
-    this.setState({todaysQuestion: todaysQuestion})
-
-    // if there's no active question even after checking the server (ie. today is still blank), create a question for today and save it to server.
-    if (todaysQuestion === ''){ 
-      todaysQuestion = this.getRandomQuestion()
-
-      // save today's question immediately so view can update before saving it to server
-      this.setState({todaysQuestion: todaysQuestion})
-
-      // save the question to the server so that it doesn't change any more today
-      firebase.database().ref('users/' + this.state.user.uid + '/' + today ).set({
-        question: todaysQuestion
-      });
-    }
-
-    // save answers to state
-    this.setState({
+      if (todaysQuestion === ''){ 
+        todaysQuestion = this.getRandomQuestion()
+      } 
+      this.setState({
+        todaysQuestion: todaysQuestion,
         pastPositivity: pastPositivity.reverse(),
         todaysPositivity: todaysPositivity
       })
-
+      this.setState({data: data})
+    })
   }
 
   storePositivity() {
-    console.log('trialsRemaining: ', this.state.trialsRemaining, ' subscribed: ', this.state.subscribed)
-    if(this.state.user === 'trial') {
-        this.props.navigation.navigate('AuthScreen3')
+    firebase.analytics().logEvent('Save_Pressed')
+    let today = this._getToday()
+    let data = this.state.data
+    data[today] = {
+      positivity: this.state.todaysPositivity,
+      created: today,
+      question: this.state.todaysQuestion
     }
-    else if(this.state.trialsRemaining < 1 && this.state.subscribed !== true ) {
-      this.props.navigation.navigate('PurchaseScreen')
-    }
-    else {
-      let today = this._getToday()
-      this.setState({saving: true, saved: false})
+    AsyncStorage.setItem('data', JSON.stringify(data))
+    this.setState({ saved: true})
+    this.timeout = setTimeout(() => { this.setState({saved: false}) }, 1000)
+  }
 
-      firebase.database().ref('users/' + this.state.user.uid + '/' + today ).set({
-        positivity: this.state.todaysPositivity,
-        created: today,
-        question: this.state.todaysQuestion
-      });
-      firebase.analytics().logEvent('Save_Pressed')
-      this.setState({ saving: false, saved: true})
-      this.timeout = setTimeout(() => { this.setState({saved: false}) }, 1000)
-      AsyncStorage.setItem('trialsRemaining', JSON.stringify(this.state.trialsRemaining - 1))
-      this.setState({trialsRemaining: this.state.trialsRemaining - 1 })
-    }
+  _getToday(){
+    let d = new Date();
+    // let today = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate() // make date in format 2019-05-31
+    let today = '2019-09-16'
+    return today
   }
 
   render() {
@@ -153,7 +114,7 @@ export default class TrainerScreen extends React.Component {
           <ScrollView style={{flex: 1}} keyboardShouldPersistTaps={'handled'}>
               
               <Animatable.View duration={1000} transition="opacity" style={{opacity: this.state.showPast ? 1 : 0 }}>
-                <Account user={this.state.user} visible={this.state.showPast} logout={() => this.logout()} />
+                <Account visible={this.state.showPast} />
               </Animatable.View> 
 
               <View style={{ backgroundColor: this.state.backgroundColor, padding: 30}} >
@@ -171,7 +132,6 @@ export default class TrainerScreen extends React.Component {
                   <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                     <Text>🙂 Your answer – tap below to type.</Text>
                     {this.state.saved ? <Text style={{}}>Saved ✅</Text> : <Text> </Text> }
-                    {this.state.saving ? <ActivityIndicator /> : null }
                   </View>
                   <TextInput 
                     multiline={true}
@@ -191,7 +151,11 @@ export default class TrainerScreen extends React.Component {
 
               <Animatable.View style={styles.accountBar} animation="fadeIn" delay={5000} duration={3000}>
                 
-                {this.state.showPast ? 
+                {!this.state.showPast ?
+                <View style={{marginTop: 30}}>
+                  <Button onPress={() => this.pastToggle()} title="Show Past Positivities" />
+                </View>
+                : 
                 <View>
                   <View style={{marginTop: 30}}>
                     <Button onPress={() => this.pastToggle()} title="Hide Past Positivities" />
@@ -216,10 +180,7 @@ export default class TrainerScreen extends React.Component {
                       </Animatable.View>
                       )
                     : null }
-                </View> :
-                <View style={{marginTop: 30}}>
-                  <Button onPress={() => this.pastToggle()} title="Show Past Positivities" />
-                </View>
+                </View> 
                 }
 
               </ Animatable.View>
@@ -230,16 +191,8 @@ export default class TrainerScreen extends React.Component {
     );
   }
 
-  _getToday(){
-    // make date in format 2019-05-31
-    let d = new Date();
-    let today = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
-    return today
-  }
-
   getRandomQuestion(){
-    //make a random number between one and the length of the items in the question array
-    randomNumber = Math.floor(Math.random() * questions.length)
+    randomNumber = Math.floor(Math.random() * questions.length) //make a random number between one and the length of the items in the question array
     return questions[randomNumber]
   }
 
@@ -265,7 +218,6 @@ export default class TrainerScreen extends React.Component {
   }
 
   _firebaseNotifSetup(){
-
     firebase.messaging().getToken()
     .then(fcmToken => {
       if (fcmToken) {
@@ -276,25 +228,23 @@ export default class TrainerScreen extends React.Component {
         // user doesn't have a device token yet
       } 
     });
-
     firebase.messaging().hasPermission()
-      .then(enabled => {
-        if (enabled) {
-          // user has permissions
-          console.log(enabled)
-        } else {
-          // user doesn't have permission
-          setTimeout(() => {
-            firebase.messaging().requestPermission()
-            .then(() => {
-              // User has authorised  
-            })
-            .catch(error => {
-              // User has rejected permissions  
-            })}, 3000)
-        } 
-      });
-
+    .then(enabled => {
+      if (enabled) {
+        // user has permissions
+        console.log(enabled)
+      } else {
+        // user doesn't have permission
+        setTimeout(() => {
+          firebase.messaging().requestPermission()
+          .then(() => {
+            // User has authorised  
+          })
+          .catch(error => {
+            // User has rejected permissions  
+          })}, 3000)
+      } 
+    });
     //if there are any unread badgets, remove them.
     firebase.notifications().setBadge(0)
   }
