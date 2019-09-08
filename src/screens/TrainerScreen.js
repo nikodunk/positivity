@@ -93,6 +93,7 @@ export default class TrainerScreen extends React.Component {
     AsyncStorage.setItem('data', JSON.stringify(data))
     this.setState({ saved: true})
     this.timeout = setTimeout(() => { this.setState({saved: false}) }, 1000)
+    firebase.notifications().setBadge(0)
   }
 
   _getToday(){
