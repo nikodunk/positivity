@@ -46,6 +46,20 @@ export default class TrainerScreen extends React.Component {
     this.getPositivity()
     firebase.analytics().logEvent('PositivityScreen_Loaded')
     this._firebaseNotifSetup()
+    AppState.addEventListener('change', this._handleAppStateChange);
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange);
+  }
+
+  _handleAppStateChange = (nextAppState) => {
+    if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+      //if there are any unread badgets, remove them.
+      firebase.notifications().setBadge(0)
+      this.setState({showPast: false})
+    }
+    this.setState({appState: nextAppState});
   }
   
   getPositivity(){
