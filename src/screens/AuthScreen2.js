@@ -18,7 +18,7 @@ import { AccessToken, LoginManager } from 'react-native-fbsdk';
 class AuthScreen extends React.Component {
 
   static navigationOptions = {
-    title: 'Enable Notifications'
+    header: null,
   };
 
   constructor(props) {

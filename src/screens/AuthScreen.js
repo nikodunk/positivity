@@ -13,7 +13,7 @@ import * as Animatable from 'react-native-animatable';
 export default class AuthScreen extends React.Component {
 
   static navigationOptions = {
-    title: 'Welcome to Positivity Trainer!'
+    header: null,
   };
 
 
@@ -26,7 +26,7 @@ export default class AuthScreen extends React.Component {
         style={styles.container}>
         <ScrollView style={{flex: 1}}>
             <Text style={styles.text}> </Text>
-            <Text style={styles.text}>This app asks you a different question every day, designed to focus on the positive in life!</Text>
+            <Text style={styles.text}>Welcome! This app asks you one question every day, designed to focus on the positive in life!</Text>
             <Text style={styles.text}> </Text>
             <Animatable.Text 
               animation="fadeIn" 
